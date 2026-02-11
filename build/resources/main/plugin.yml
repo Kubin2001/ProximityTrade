@@ -1,0 +1,11 @@
+name: ProximityTrade
+version: '1.0.0'
+main: org.ptrade.proximityTrade.ProximityTrade
+api-version: '1.21'
+
+
+commands:
+  trade:
+    usage: /<command> <player>
+    description: Invite other player to trade
+    permission: proximityTrade.trade
