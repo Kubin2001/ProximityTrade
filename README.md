@@ -1,2 +1,2 @@
 # ProximityTrade
-Minecraft plugin for safe strading with nearby players
+Minecraft plugin for safe trading with nearby players
