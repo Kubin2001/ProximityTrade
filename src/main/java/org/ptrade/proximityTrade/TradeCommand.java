@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,8 +31,8 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
-        if(!(sender instanceof Player p)){return false;}
+    public boolean onCommand(CommandSender sen, Command command, String label, String[] args){
+        if(!(sen instanceof Player sender)){return false;}
 
         if(args.length != 1){return false;}
 
@@ -42,7 +43,34 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
         if(receiver == null){
             return  false;
         }
-        receiver.sendMessage(p.getName() + " wants to trade with you");
+        if(receiver == sender){
+            Helpers.SendFormated(sender,"You cannot offer trade proposal to yourself");
+            return  false;
+        }
+        TradeStatus senderStatus = TradeList.GetStatus(sender.getUniqueId());
+        TradeStatus reciverStatus = TradeList.GetStatus(receiver.getUniqueId());
+
+        if(reciverStatus.trading){
+            Helpers.SendFormated(sender,"This player is already trading with someone else");
+            return  true;
+        }
+        if(reciverStatus.lastOffer != sender){
+            Helpers.SendFormated(receiver,sender.getName() + " wants to trade with you type /trade " + sender.getName() + "to accept");
+            reciverStatus.lastOffer = sender;
+            return true;
+        }
+        if(senderStatus.lastOffer == receiver){
+            senderStatus.trading = true;
+            reciverStatus.trading = true;
+            senderStatus.lastOffer = null;
+            reciverStatus.lastOffer = null;
+            Inventory tradeInv = Bukkit.createInventory(null, 54, "Trade");
+
+            sender.openInventory(tradeInv);
+            receiver.openInventory(tradeInv);
+        }
+
+
 
         return false;
     }
@@ -50,10 +78,7 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         switch (command.getName()) {
-            case "setRewardLevel":
-            case "resetRewardTimer":
-            case "rewardInfo":
-            case "moveReward":
+            case "trade":
                 return GetPlayerNames(args);
             default:
                 return Collections.emptyList();

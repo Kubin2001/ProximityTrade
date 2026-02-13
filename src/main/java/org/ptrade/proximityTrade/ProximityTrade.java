@@ -8,9 +8,12 @@ public final class ProximityTrade extends JavaPlugin {
     public void onEnable() {
         getLogger().info("Proximity Trade Starting");
 
+        Helpers.Init();
+
         TradeCommand handler = new TradeCommand();
 
         getCommand("trade").setExecutor(handler);
+        getServer().getPluginManager().registerEvents(new EventListener(), this);
 
     }
 
