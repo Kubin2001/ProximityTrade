@@ -10,4 +10,9 @@ public class TradeStatus {
         lastOffer = null;
         this.trading = trading;
     }
+
+    void Clear(){
+        lastOffer = null;
+        trading = false;
+    }
 }

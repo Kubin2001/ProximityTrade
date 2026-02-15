@@ -55,23 +55,20 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
             return  true;
         }
         if(reciverStatus.lastOffer != sender){
-            Helpers.SendFormated(receiver,sender.getName() + " wants to trade with you type /trade " + sender.getName() + "to accept");
+            Helpers.SendFormated(receiver,sender.getName() + " wants to trade with you type /trade " + sender.getName() + " to accept");
             reciverStatus.lastOffer = sender;
+            senderStatus.lastOffer = receiver;
             return true;
         }
         if(senderStatus.lastOffer == receiver){
             senderStatus.trading = true;
             reciverStatus.trading = true;
-            senderStatus.lastOffer = null;
-            reciverStatus.lastOffer = null;
-            Inventory tradeInv = Bukkit.createInventory(null, 54, "Trade");
-
-            sender.openInventory(tradeInv);
-            receiver.openInventory(tradeInv);
+            senderStatus.lastOffer = receiver;
+            reciverStatus.lastOffer = sender;
+            sender.openInventory(TradeGUI.Create(sender, receiver));
+            receiver.openInventory(TradeGUI.Create(receiver, sender));
+            return  true;
         }
-
-
-
         return false;
     }
 
