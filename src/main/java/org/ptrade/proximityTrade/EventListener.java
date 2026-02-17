@@ -1,5 +1,6 @@
 package org.ptrade.proximityTrade;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -7,10 +8,16 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.plugin.Plugin;
 
 
 public class EventListener implements org.bukkit.event.Listener {
+    public Plugin plugin;
+    public EventListener(Plugin plugin){
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
@@ -37,9 +44,11 @@ public class EventListener implements org.bukkit.event.Listener {
         if(title.equals("Trading with " + otherPlayer.getName())){
             status.Clear();
             TradeStatus otherStatus = TradeList.GetStatus(otherPlayer.getUniqueId());
+            TradeGUI.DropInvItems(p, event.getInventory());
             if (otherStatus.lastOffer != null && otherStatus.lastOffer.equals(p)) {
                 otherStatus.Clear();
                 if (otherPlayer.isOnline()) {
+                    TradeGUI.DropInvItems(otherPlayer, otherPlayer.getOpenInventory().getTopInventory());
                     otherPlayer.closeInventory();
                     Helpers.SendFormated(otherPlayer, p.getName() + " canceled Trade Deal");
                 }
@@ -57,13 +66,32 @@ public class EventListener implements org.bukkit.event.Listener {
             return;
         }
         if(title.equals("Trading with " + otherPlayer.getName())){
-            int slot = event.getRawSlot();
-            boolean isRange1 = (slot >= 0 && slot <= 3);
-            boolean isRange2 = (slot >= 9 && slot <= 12);
-            boolean isRange3 = (slot >= 18 && slot <= 21);
-            if (!isRange1 && !isRange2 && !isRange3) {
+            Inventory top = event.getView().getTopInventory();
+            Inventory bottom = event.getView().getBottomInventory();
+            Inventory clickedInv = event.getClickedInventory();
+            if(event.getClickedInventory().equals(top)){
+                int slot = event.getSlot();
+
+                boolean isRange1 = (slot >= 0 && slot <= 3);
+                boolean isRange2 = (slot >= 9 && slot <= 12);
+                boolean isRange3 = (slot >= 18 && slot <= 21);
+
+                if (!isRange1 && !isRange2 && !isRange3) {
+                    event.setCancelled(true);
+                    return;
+                }
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    TradeGUI.UpdateParterInv(p, otherPlayer);
+                });
+            }
+            else if (clickedInv.equals(bottom) && event.isShiftClick()) {
                 event.setCancelled(true);
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    // Ta metoda sprawdzi stan PO przeniesieniu
+                    TradeGUI.UpdateParterInv(p, otherPlayer);
+                });
             }
         }
+
     }
 }

@@ -13,7 +13,7 @@ public final class ProximityTrade extends JavaPlugin {
         TradeCommand handler = new TradeCommand();
 
         getCommand("trade").setExecutor(handler);
-        getServer().getPluginManager().registerEvents(new EventListener(), this);
+        getServer().getPluginManager().registerEvents(new EventListener(this), this);
 
     }
 

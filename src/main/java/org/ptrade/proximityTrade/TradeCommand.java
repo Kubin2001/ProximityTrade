@@ -13,11 +13,14 @@ import java.util.Collections;
 import java.util.List;
 
 public class TradeCommand implements CommandExecutor, TabCompleter {
-    public List<String> GetPlayerNames(String[] args) {
+    public List<String> GetPlayerNames(String[] args, String playerName) {
         if (args.length == 1) {
             String prefix = args[0].toLowerCase();
             List<String> names = new ArrayList<>();
             for (Player p : Bukkit.getOnlinePlayers()) {
+                if(p.getName().equals(playerName)){
+                    continue;
+                }
                 String name = p.getName();
                 if (name.toLowerCase().startsWith(prefix)) {
                     names.add(name);
@@ -76,7 +79,7 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         switch (command.getName()) {
             case "trade":
-                return GetPlayerNames(args);
+                return GetPlayerNames(args, sender.getName());
             default:
                 return Collections.emptyList();
         }
