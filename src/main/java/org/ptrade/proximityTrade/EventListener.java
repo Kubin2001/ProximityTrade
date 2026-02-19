@@ -76,6 +76,24 @@ public class EventListener implements org.bukkit.event.Listener {
                 boolean isRange2 = (slot >= 9 && slot <= 12);
                 boolean isRange3 = (slot >= 18 && slot <= 21);
 
+                if(slot == 48){
+                    if(TradeGUI.TryToFinalize(p,otherPlayer)){
+                        TradeGUI.Finalize(p,otherPlayer);
+                    }
+                }
+
+                if(TradeGUI.CheckIfConfirmed(p)){
+                    event.setCancelled(true);
+                }
+
+                if(slot == 45){
+                    event.setCancelled(true);
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        TradeGUI.UpdateParterConfirmStatus(p, otherPlayer);
+                    });
+                    return;
+                }
+
                 if (!isRange1 && !isRange2 && !isRange3) {
                     event.setCancelled(true);
                     return;
