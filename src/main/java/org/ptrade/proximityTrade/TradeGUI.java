@@ -93,6 +93,10 @@ public class TradeGUI {
         Inventory playerTop = playerView.getTopInventory();
         Inventory partnerTop = partnerView.getTopInventory();
 
+        if(!CheckIfConfirmed(player) || !CheckIfConfirmed(partner)){
+            return false;
+        }
+
         ItemStack playerFinalItem = playerTop.getItem(48);
         if(playerFinalItem.getType() != Material.ENCHANTED_BOOK){
             playerFinalItem.setType(Material.ENCHANTED_BOOK);

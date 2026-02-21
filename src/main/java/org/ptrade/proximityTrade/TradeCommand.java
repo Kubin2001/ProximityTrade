@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class TradeCommand implements CommandExecutor, TabCompleter {
+    private double maxDistance = 50;
+
     public List<String> GetPlayerNames(String[] args, String playerName) {
         if (args.length == 1) {
             String prefix = args[0].toLowerCase();
@@ -43,9 +45,23 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
 
         Player receiver = Bukkit.getPlayer(receiverName);
 
+
         if(receiver == null){
             return  false;
         }
+
+        if(receiver.getWorld() != sender.getWorld()){
+            Helpers.SendFormated(sender, "&4You cannot send trade proposal when " + receiverName +
+                    " is not in the same world");
+            return  true;
+        }
+
+        double distance = sender.getLocation().distance(receiver.getLocation());
+        if(distance > maxDistance){
+            Helpers.SendFormated(sender, "&4You are too far away from  " + receiverName);
+            return  true;
+        }
+
         if(receiver == sender){
             Helpers.SendFormated(sender,"You cannot offer trade proposal to yourself");
             return  false;
