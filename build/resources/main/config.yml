@@ -1,0 +1,6 @@
+# Max distance at which trade will work (defaulted to 50)
+maxDistance: 50
+
+# If set to true players will be able to trade when they are in different dimensions
+# Set it to 1 if you want that (This will also ignore any distance)
+ignoreWorlds: false

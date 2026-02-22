@@ -50,17 +50,21 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
             return  false;
         }
 
-        if(receiver.getWorld() != sender.getWorld()){
-            Helpers.SendFormated(sender, "&4You cannot send trade proposal when " + receiverName +
-                    " is not in the same world");
-            return  true;
+        if(!MainConfig.ignoreWorlds){
+            if(receiver.getWorld() != sender.getWorld()){
+                Helpers.SendFormated(sender, "&4You cannot send trade proposal when " + receiverName +
+                        " is not in the same world");
+                return  true;
+            }
+            double distance = sender.getLocation().distance(receiver.getLocation());
+            if(distance > MainConfig.maxTradeDistance){
+                Helpers.SendFormated(sender, "&4You are too far away from  " + receiverName);
+                return  true;
+            }
         }
 
-        double distance = sender.getLocation().distance(receiver.getLocation());
-        if(distance > maxDistance){
-            Helpers.SendFormated(sender, "&4You are too far away from  " + receiverName);
-            return  true;
-        }
+
+
 
         if(receiver == sender){
             Helpers.SendFormated(sender,"You cannot offer trade proposal to yourself");

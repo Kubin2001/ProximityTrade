@@ -7,7 +7,10 @@ public final class ProximityTrade extends JavaPlugin {
     @Override
     public void onEnable() {
         getLogger().info("Proximity Trade Starting");
-
+        if(!getDataFolder().exists()){
+            getDataFolder().mkdirs();
+        }
+        MainConfig.Load(this);
         Helpers.Init();
 
         TradeCommand handler = new TradeCommand();
