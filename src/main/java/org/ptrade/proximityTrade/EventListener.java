@@ -35,12 +35,15 @@ public class EventListener implements org.bukkit.event.Listener {
     public void onInvClose(InventoryCloseEvent event){
         Player p = (Player)event.getPlayer();
         TradeStatus status = TradeList.GetStatus(p.getUniqueId());
-        InventoryView view = event.getView();
-        String title = view.getTitle();
-        Player otherPlayer = status.lastOffer;
-        if(otherPlayer == null){
+        if(status == null){
             return;
         }
+        InventoryView view = event.getView();
+        String title = view.getTitle();
+        if(status.lastOffer == null){
+            return;
+        }
+        Player otherPlayer = status.lastOffer;
         if(title.equals("Trading with " + otherPlayer.getName())){
             status.Clear();
             TradeStatus otherStatus = TradeList.GetStatus(otherPlayer.getUniqueId());
