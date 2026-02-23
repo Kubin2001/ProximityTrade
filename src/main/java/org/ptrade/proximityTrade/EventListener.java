@@ -2,7 +2,6 @@ package org.ptrade.proximityTrade;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -34,7 +33,12 @@ public class EventListener implements org.bukkit.event.Listener {
     @EventHandler
     public void onInvClose(InventoryCloseEvent event){
         Player p = (Player)event.getPlayer();
+        if (event.getView().getTitle().equals("Trade Outcome")){
+            TradeGUI.DropFinalInventory(p, event.getView());
+            return;
+        }
         TradeStatus status = TradeList.GetStatus(p.getUniqueId());
+
         if(status == null){
             return;
         }
@@ -57,6 +61,7 @@ public class EventListener implements org.bukkit.event.Listener {
                 }
             }
         }
+
     }
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event){
@@ -72,7 +77,7 @@ public class EventListener implements org.bukkit.event.Listener {
             Inventory top = event.getView().getTopInventory();
             Inventory bottom = event.getView().getBottomInventory();
             Inventory clickedInv = event.getClickedInventory();
-            if(event.getClickedInventory().equals(top)){
+            if(event.getClickedInventory() != null && event.getClickedInventory().equals(top)){
                 int slot = event.getSlot();
 
                 boolean isRange1 = (slot >= 0 && slot <= 3);
@@ -92,7 +97,7 @@ public class EventListener implements org.bukkit.event.Listener {
                 if(slot == 45){
                     event.setCancelled(true);
                     Bukkit.getScheduler().runTask(plugin, () -> {
-                        TradeGUI.UpdateParterConfirmStatus(p, otherPlayer);
+                        TradeGUI.UpdatePartnerConfirmStatus(p, otherPlayer);
                     });
                     return;
                 }
@@ -113,6 +118,5 @@ public class EventListener implements org.bukkit.event.Listener {
                 });
             }
         }
-
     }
 }

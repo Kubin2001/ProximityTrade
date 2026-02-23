@@ -2,8 +2,6 @@ package org.ptrade.proximityTrade;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -11,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class TradeGUI {
@@ -177,13 +176,17 @@ public class TradeGUI {
         InventoryView playerView = player.getOpenInventory();
         Inventory playerTop = playerView.getTopInventory();
         ItemStack confirmItem = playerTop.getItem(45);
+        if (confirmItem == null || confirmItem.getType().isAir()){
+            return false;
+        }
+
         if(confirmItem.getType() == Material.LIME_CONCRETE){
             return  true;
         }
         return  false;
     }
 
-    public static void UpdateParterConfirmStatus(Player player , Player partner){
+    public static void UpdatePartnerConfirmStatus(Player player , Player partner){
         InventoryView partnerView = partner.getOpenInventory();
         InventoryView playerView = player.getOpenInventory();
 
@@ -215,27 +218,50 @@ public class TradeGUI {
     public static void DropInvItems(Player player, Inventory inv){
         InventoryView playerView = player.getOpenInventory();
         Inventory playerTop = playerView.getTopInventory();
+        ArrayList<ItemStack> items = new ArrayList<>();
         for (int i = 0; i < 4 ; i ++){
             ItemStack item = playerTop.getItem(i);
             if(item == null){
                 continue;
             }
-            player.getWorld().dropItemNaturally(player.getLocation(), item);
+            items.add(item);
         }
         for (int i = 9; i < 13 ; i ++){
             ItemStack item = playerTop.getItem(i);
             if(item == null){
                 continue;
             }
-            player.getWorld().dropItemNaturally(player.getLocation(), item);
+            items.add(item);
         }
         for (int i = 18; i < 22 ; i ++){
             ItemStack item = playerTop.getItem(i);
             if(item == null){
                 continue;
             }
-            player.getWorld().dropItemNaturally(player.getLocation(), item);
+            items.add(item);
+        }
+
+        for (ItemStack item : items) {
+
+            HashMap<Integer, ItemStack> leftover = player.getInventory().addItem(item);
+
+            for (ItemStack rest : leftover.values()) {
+                player.getWorld().dropItemNaturally(player.getLocation(), rest);
+            }
         }
     }
 
+    public static void DropFinalInventory(Player player, InventoryView view) {
+        Bukkit.getLogger().info("This func starts");
+        Inventory inventory = view.getTopInventory();
+        for (int slot = 0; slot < inventory.getSize(); slot++) {
+            ItemStack item = inventory.getItem(slot);
+
+            if (item == null || item.getType().isAir())
+                continue;
+
+            player.getWorld().dropItemNaturally(player.getLocation(),item);
+        }
+        inventory.clear();
+    }
 }
