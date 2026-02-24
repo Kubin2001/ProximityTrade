@@ -45,7 +45,6 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
 
         Player receiver = Bukkit.getPlayer(receiverName);
 
-
         if(receiver == null){
             return  false;
         }
@@ -64,35 +63,37 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
         }
 
 
-
-
         if(receiver == sender){
             Helpers.SendFormated(sender,"You cannot offer trade proposal to yourself");
             return  false;
         }
         TradeStatus senderStatus = TradeList.GetStatus(sender.getUniqueId());
-        TradeStatus reciverStatus = TradeList.GetStatus(receiver.getUniqueId());
+        TradeStatus receiverStatus = TradeList.GetStatus(receiver.getUniqueId());
 
-        if(reciverStatus.trading){
+        if(receiverStatus.trading){
             Helpers.SendFormated(sender,"This player is already trading with someone else");
             return  true;
         }
-        if(reciverStatus.lastOffer != sender){
-            Helpers.SendFormated(receiver,sender.getName() + " wants to trade with you type /trade " + sender.getName() + " to accept");
-            reciverStatus.lastOffer = sender;
-            senderStatus.lastOffer = receiver;
-            return true;
+        if(receiverStatus.lastOffer != sender){
+            receiverStatus.lastOffer = sender;
+            if(senderStatus.lastOffer != receiver){
+                Helpers.SendFormated(receiver,sender.getName() +
+                        " wants to trade with you type /trade " + sender.getName() + " to accept");
+                return true;
+            }
+
         }
         if(senderStatus.lastOffer == receiver){
             senderStatus.trading = true;
-            reciverStatus.trading = true;
+            receiverStatus.trading = true;
             senderStatus.lastOffer = receiver;
-            reciverStatus.lastOffer = sender;
+            receiverStatus.lastOffer = sender;
             sender.openInventory(TradeGUI.Create(sender, receiver));
             receiver.openInventory(TradeGUI.Create(receiver, sender));
             return  true;
         }
-        return false;
+        Helpers.SendFormated(sender,receiver.getName() + " already has your trade offer");
+        return true;
     }
 
     @Override

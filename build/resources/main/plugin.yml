@@ -9,3 +9,8 @@ commands:
     usage: /<command> <player>
     description: Invite other player to trade
     permission: proximityTrade.trade
+
+  restart:
+    usage: /<command>
+    description: Reload Main Config
+    permission: proximityTrade.restart

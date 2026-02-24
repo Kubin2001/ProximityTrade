@@ -12,7 +12,7 @@ public final class ProximityTrade extends JavaPlugin {
         }
         MainConfig.Load(this);
         Helpers.Init();
-
+        getCommand("restart").setExecutor(new CommandRestart(this));
         TradeCommand handler = new TradeCommand();
 
         getCommand("trade").setExecutor(handler);

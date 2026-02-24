@@ -11,6 +11,7 @@ public class MainConfig {
     public static void Load(Plugin plugin){
         YamlConfiguration yamlConf = null;
         plugin.saveDefaultConfig();
+        plugin.reloadConfig();
 
         maxTradeDistance = plugin.getConfig().getInt("maxDistance",50);
         ignoreWorlds = plugin.getConfig().getBoolean("ignoreWorlds",false);
