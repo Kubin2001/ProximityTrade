@@ -252,7 +252,6 @@ public class TradeGUI {
     }
 
     public static void DropFinalInventory(Player player, InventoryView view) {
-        Bukkit.getLogger().info("This func starts");
         Inventory inventory = view.getTopInventory();
         for (int slot = 0; slot < inventory.getSize(); slot++) {
             ItemStack item = inventory.getItem(slot);

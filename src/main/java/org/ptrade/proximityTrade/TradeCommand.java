@@ -77,6 +77,7 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
         if(receiverStatus.lastOffer != sender){
             receiverStatus.lastOffer = sender;
             if(senderStatus.lastOffer != receiver){
+                Helpers.SendFormated(sender, "Trade request send to: " + receiver.getName());
                 Helpers.SendFormated(receiver,sender.getName() +
                         " wants to trade with you type /trade " + sender.getName() + " to accept");
                 return true;
