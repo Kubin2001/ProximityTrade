@@ -44,15 +44,18 @@ public class EventListener implements org.bukkit.event.Listener {
         }
         InventoryView view = event.getView();
         String title = view.getTitle();
-        if(status.lastOffer == null){
+
+        Player otherPlayer = status.GetLastOffer();
+        if(otherPlayer == null){
             return;
         }
-        Player otherPlayer = status.lastOffer;
+
         if(title.equals("Trading with " + otherPlayer.getName())){
             status.Clear();
             TradeStatus otherStatus = TradeList.GetStatus(otherPlayer.getUniqueId());
             TradeGUI.DropInvItems(p, event.getInventory());
-            if (otherStatus.lastOffer != null && otherStatus.lastOffer.equals(p)) {
+
+            if (otherStatus.GetLastOffer() != null && otherStatus.GetLastOffer().equals(p)) {
                 otherStatus.Clear();
                 if (otherPlayer.isOnline()) {
                     TradeGUI.DropInvItems(otherPlayer, otherPlayer.getOpenInventory().getTopInventory());
@@ -68,7 +71,7 @@ public class EventListener implements org.bukkit.event.Listener {
         String title = event.getView().getTitle();
         Player p = (Player)event.getWhoClicked();
         TradeStatus status = TradeList.GetStatus(p.getUniqueId());
-        Player otherPlayer = status.lastOffer;
+        Player otherPlayer = status.GetLastOffer();
         if(otherPlayer == null){
             status.Clear();
             return;
@@ -110,7 +113,7 @@ public class EventListener implements org.bukkit.event.Listener {
                     TradeGUI.UpdateParterInv(p, otherPlayer);
                 });
             }
-            else if (clickedInv.equals(bottom) && event.isShiftClick()) {
+            else if (clickedInv != null && clickedInv.equals(bottom) && event.isShiftClick()) {
                 event.setCancelled(true);
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     // Ta metoda sprawdzi stan PO przeniesieniu

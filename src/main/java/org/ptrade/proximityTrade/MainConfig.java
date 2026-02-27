@@ -1,6 +1,5 @@
 package org.ptrade.proximityTrade;
 
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
 
@@ -9,7 +8,6 @@ public class MainConfig {
     public static boolean ignoreWorlds = false;
 
     public static void Load(Plugin plugin){
-        YamlConfiguration yamlConf = null;
         plugin.saveDefaultConfig();
         plugin.reloadConfig();
 

@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class TradeCommand implements CommandExecutor, TabCompleter {
-    private double maxDistance = 50;
 
     public List<String> GetPlayerNames(String[] args, String playerName) {
         if (args.length == 1) {
@@ -74,9 +73,11 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
             Helpers.SendFormated(sender,"This player is already trading with someone else");
             return  true;
         }
-        if(receiverStatus.lastOffer != sender){
-            receiverStatus.lastOffer = sender;
-            if(senderStatus.lastOffer != receiver){
+
+        Player reciverLastOffer = receiverStatus.GetLastOffer();
+        if(reciverLastOffer != sender){
+            receiverStatus.lastOffer = sender.getUniqueId();
+            if(senderStatus.lastOffer != receiver.getUniqueId()){
                 Helpers.SendFormated(sender, "Trade request send to: " + receiver.getName());
                 Helpers.SendFormated(receiver,sender.getName() +
                         " wants to trade with you type /trade " + sender.getName() + " to accept");
@@ -84,11 +85,11 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
             }
 
         }
-        if(senderStatus.lastOffer == receiver){
+        if(senderStatus.lastOffer == receiver.getUniqueId()){
             senderStatus.trading = true;
             receiverStatus.trading = true;
-            senderStatus.lastOffer = receiver;
-            receiverStatus.lastOffer = sender;
+            senderStatus.lastOffer = receiver.getUniqueId();
+            receiverStatus.lastOffer = sender.getUniqueId();
             sender.openInventory(TradeGUI.Create(sender, receiver));
             receiver.openInventory(TradeGUI.Create(receiver, sender));
             return  true;
@@ -99,12 +100,10 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        switch (command.getName()) {
-            case "trade":
-                return GetPlayerNames(args, sender.getName());
-            default:
-                return Collections.emptyList();
+        if(command.getName().equals("trade")){
+            return GetPlayerNames(args, sender.getName());
         }
+        return Collections.emptyList();
     }
 
 }
