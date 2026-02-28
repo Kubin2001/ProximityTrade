@@ -1,5 +1,5 @@
 name: ProximityTrade
-version: '1.0.2'
+version: '1.0.3'
 main: org.ptrade.proximityTrade.ProximityTrade
 api-version: '1.21'
 
@@ -10,7 +10,7 @@ commands:
     description: Invite other player to trade
     permission: proximityTrade.trade
 
-  restart:
+  reload:
     usage: /<command>
     description: Reload Main Config
-    permission: proximityTrade.restart
+    permission: proximityTrade.reload

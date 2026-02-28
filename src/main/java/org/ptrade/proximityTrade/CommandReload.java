@@ -6,12 +6,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.io.IOException;
-
-public class CommandRestart implements CommandExecutor {
+public class CommandReload implements CommandExecutor {
     public Plugin plugin = null;
 
-    public CommandRestart(Plugin plugin){
+    public CommandReload(Plugin plugin){
         this.plugin = plugin;
     }
 
