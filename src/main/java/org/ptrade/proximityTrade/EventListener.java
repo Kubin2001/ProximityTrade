@@ -53,12 +53,12 @@ public class EventListener implements org.bukkit.event.Listener {
         if(title.equals("Trading with " + otherPlayer.getName())){
             status.Clear();
             TradeStatus otherStatus = TradeList.GetStatus(otherPlayer.getUniqueId());
-            TradeGUI.DropInvItems(p, event.getInventory());
+            TradeGUI.DropInvItems(p);
 
             if (otherStatus.GetLastOffer() != null && otherStatus.GetLastOffer().equals(p)) {
                 otherStatus.Clear();
                 if (otherPlayer.isOnline()) {
-                    TradeGUI.DropInvItems(otherPlayer, otherPlayer.getOpenInventory().getTopInventory());
+                    TradeGUI.DropInvItems(otherPlayer);
                     otherPlayer.closeInventory();
                     Helpers.SendFormated(otherPlayer, p.getName() + " canceled Trade Deal");
                 }
@@ -110,14 +110,14 @@ public class EventListener implements org.bukkit.event.Listener {
                     return;
                 }
                 Bukkit.getScheduler().runTask(plugin, () -> {
-                    TradeGUI.UpdateParterInv(p, otherPlayer);
+                    TradeGUI.UpdatePartnerInv(p, otherPlayer);
                 });
             }
             else if (clickedInv != null && clickedInv.equals(bottom) && event.isShiftClick()) {
                 event.setCancelled(true);
                 Bukkit.getScheduler().runTask(plugin, () -> {
-                    // Ta metoda sprawdzi stan PO przeniesieniu
-                    TradeGUI.UpdateParterInv(p, otherPlayer);
+                    // Checks items after transport
+                    TradeGUI.UpdatePartnerInv(p, otherPlayer);
                 });
             }
         }

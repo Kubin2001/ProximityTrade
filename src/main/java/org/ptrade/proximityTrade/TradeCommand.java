@@ -1,12 +1,12 @@
 package org.ptrade.proximityTrade;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,8 +74,8 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
             return  true;
         }
 
-        Player reciverLastOffer = receiverStatus.GetLastOffer();
-        if(reciverLastOffer != sender){
+        Player receiverLastOffer = receiverStatus.GetLastOffer();
+        if(receiverLastOffer != sender){
             receiverStatus.lastOffer = sender.getUniqueId();
             if(senderStatus.lastOffer != receiver.getUniqueId()){
                 Helpers.SendFormated(sender, "Trade request send to: " + receiver.getName());
@@ -90,6 +90,8 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
             receiverStatus.trading = true;
             senderStatus.lastOffer = receiver.getUniqueId();
             receiverStatus.lastOffer = sender.getUniqueId();
+            Helpers.PlaySoundToPLayer (sender, Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
+            Helpers.PlaySoundToPLayer (receiver, Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
             sender.openInventory(TradeGUI.Create(sender, receiver));
             receiver.openInventory(TradeGUI.Create(receiver, sender));
             return  true;

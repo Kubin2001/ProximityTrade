@@ -42,18 +42,6 @@ public class Helpers {
         Bukkit.getScheduler().runTaskLater(plugin, task, delay);
     }
 
-    public static void RepairAll(Player player) {
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (item == null) continue;
-
-            ItemMeta meta = item.getItemMeta();
-            if (meta instanceof Damageable dmg) {
-                dmg.setDamage(0);
-                item.setItemMeta((ItemMeta) dmg);
-            }
-        }
-    }
-
     public static ItemStack CreateItem(Material mat, String name, String desc) {
         ItemStack retItem = new ItemStack(mat);
 

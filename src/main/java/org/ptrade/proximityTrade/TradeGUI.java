@@ -58,7 +58,7 @@ public class TradeGUI {
         return i + 5;
     }
 
-    public static void UpdateParterInv(Player player , Player partner){
+    public static void UpdatePartnerInv(Player player , Player partner){
         InventoryView partnerView = partner.getOpenInventory();
         InventoryView playerView = player.getOpenInventory();
 
@@ -99,12 +99,15 @@ public class TradeGUI {
         ItemStack playerFinalItem = playerTop.getItem(48);
         if(playerFinalItem.getType() != Material.ENCHANTED_BOOK){
             playerFinalItem.setType(Material.ENCHANTED_BOOK);
-            ItemStack patnerFinalItem = partnerTop.getItem(50);
-            patnerFinalItem.setType(Material.ENCHANTED_BOOK);
+            ItemStack partnerFinalItem = partnerTop.getItem(50);
+            partnerFinalItem.setType(Material.ENCHANTED_BOOK);
 
         }
 
         ItemStack partnerFinalItem = partnerTop.getItem(48);
+        if(partnerFinalItem == null){
+            return  false;
+        }
         if(partnerFinalItem.getType() != Material.ENCHANTED_BOOK){
             return false;
         }
@@ -215,7 +218,7 @@ public class TradeGUI {
         }
     }
 
-    public static void DropInvItems(Player player, Inventory inv){
+    public static void DropInvItems(Player player){
         InventoryView playerView = player.getOpenInventory();
         Inventory playerTop = playerView.getTopInventory();
         ArrayList<ItemStack> items = new ArrayList<>();
