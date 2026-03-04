@@ -63,14 +63,14 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
 
 
         if(receiver == sender){
-            Helpers.SendFormated(sender,"You cannot offer trade proposal to yourself");
+            Helpers.SendFormated(sender,"&4You cannot offer trade proposal to yourself");
             return  false;
         }
         TradeStatus senderStatus = TradeList.GetStatus(sender.getUniqueId());
         TradeStatus receiverStatus = TradeList.GetStatus(receiver.getUniqueId());
 
         if(receiverStatus.trading){
-            Helpers.SendFormated(sender,"This player is already trading with someone else");
+            Helpers.SendFormated(sender,"&4This player is already trading with someone else");
             return  true;
         }
 
@@ -78,8 +78,8 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
         if(receiverLastOffer != sender){
             receiverStatus.lastOffer = sender.getUniqueId();
             if(senderStatus.lastOffer != receiver.getUniqueId()){
-                Helpers.SendFormated(sender, "Trade request send to: " + receiver.getName());
-                Helpers.SendFormated(receiver,sender.getName() +
+                Helpers.SendFormated(sender, "&2Trade request send to: " + receiver.getName());
+                Helpers.SendFormated(receiver,"&2" + sender.getName() +
                         " wants to trade with you type /trade " + sender.getName() + " to accept");
                 return true;
             }
@@ -96,7 +96,7 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
             receiver.openInventory(TradeGUI.Create(receiver, sender));
             return  true;
         }
-        Helpers.SendFormated(sender,receiver.getName() + " already has your trade offer");
+        Helpers.SendFormated(sender,"&2" + receiver.getName() + " already has your trade offer");
         return true;
     }
 

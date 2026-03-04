@@ -60,7 +60,7 @@ public class EventListener implements org.bukkit.event.Listener {
                 if (otherPlayer.isOnline()) {
                     TradeGUI.DropInvItems(otherPlayer);
                     otherPlayer.closeInventory();
-                    Helpers.SendFormated(otherPlayer, p.getName() + " canceled Trade Deal");
+                    Helpers.SendFormated(otherPlayer,"&4" +  p.getName() + " canceled Trade Deal");
                 }
             }
         }
