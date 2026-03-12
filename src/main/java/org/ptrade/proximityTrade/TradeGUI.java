@@ -101,6 +101,8 @@ public class TradeGUI {
             playerFinalItem.setType(Material.ENCHANTED_BOOK);
             ItemStack partnerFinalItem = partnerTop.getItem(50);
             partnerFinalItem.setType(Material.ENCHANTED_BOOK);
+            Helpers.PlayPositiveSound (player);
+            Helpers.PlayPositiveSound (partner);
 
         }
 
@@ -214,6 +216,8 @@ public class TradeGUI {
                 metaList.add("Confirmed");
                 meta.setLore(metaList);
                 item.setItemMeta(meta);
+                Helpers.PlayPositiveSound (player);
+                Helpers.PlayPositiveSound (partner);
             }
         }
     }

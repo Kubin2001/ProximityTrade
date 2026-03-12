@@ -52,11 +52,13 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
             if(receiver.getWorld() != sender.getWorld()){
                 Helpers.SendFormated(sender, "&4You cannot send trade proposal when " + receiverName +
                         " is not in the same world");
+                Helpers.PlayNegativeSound (sender);
                 return  true;
             }
             double distance = sender.getLocation().distance(receiver.getLocation());
             if(distance > MainConfig.maxTradeDistance){
                 Helpers.SendFormated(sender, "&4You are too far away from  " + receiverName);
+                Helpers.PlayNegativeSound (sender);
                 return  true;
             }
         }
@@ -64,6 +66,7 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
 
         if(receiver == sender){
             Helpers.SendFormated(sender,"&4You cannot offer trade proposal to yourself");
+            Helpers.PlayNegativeSound (sender);
             return  false;
         }
         TradeStatus senderStatus = TradeList.GetStatus(sender.getUniqueId());
@@ -71,6 +74,7 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
 
         if(receiverStatus.trading){
             Helpers.SendFormated(sender,"&4This player is already trading with someone else");
+            Helpers.PlayNegativeSound (sender);
             return  true;
         }
 
@@ -81,6 +85,8 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
                 Helpers.SendFormated(sender, "&2Trade request send to: " + receiver.getName());
                 Helpers.SendFormated(receiver,"&2" + sender.getName() +
                         " wants to trade with you type /trade " + sender.getName() + " to accept");
+                Helpers.PlayPositiveSound (sender);
+                Helpers.PlayPositiveSound (receiver);
                 return true;
             }
 
@@ -90,13 +96,14 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
             receiverStatus.trading = true;
             senderStatus.lastOffer = receiver.getUniqueId();
             receiverStatus.lastOffer = sender.getUniqueId();
-            Helpers.PlaySoundToPLayer (sender, Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
-            Helpers.PlaySoundToPLayer (receiver, Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
+            Helpers.PlayPositiveSound (sender);
+            Helpers.PlayPositiveSound (receiver);
             sender.openInventory(TradeGUI.Create(sender, receiver));
             receiver.openInventory(TradeGUI.Create(receiver, sender));
             return  true;
         }
         Helpers.SendFormated(sender,"&2" + receiver.getName() + " already has your trade offer");
+        Helpers.PlayNegativeSound (sender);
         return true;
     }
 

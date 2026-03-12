@@ -7,7 +7,6 @@ import org.bukkit.Sound;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
@@ -34,8 +33,16 @@ public class Helpers {
         return rand.nextInt((max - min) + 1) + min;
     }
 
-    public static void PlaySoundToPLayer(Player p, Sound sound) {
+    public static void PlaySoundToPlayer (Player p, Sound sound) {
         p.playSound(p.getLocation(), sound, 1.0f, 1.0f);
+    }
+
+    public static void PlayPositiveSound(Player p){
+        p.playSound(p.getLocation(), Globals.positiveS, 1.0f, 1.0f);
+    }
+
+    public static void PlayNegativeSound(Player p){
+        p.playSound(p.getLocation(), Globals.negativeS, 3.0f, 1.0f);
     }
 
     public static void RunTask(Plugin plugin, Runnable task, int delay) {
