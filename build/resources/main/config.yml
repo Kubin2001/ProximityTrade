@@ -4,3 +4,13 @@ maxDistance: 30
 # If set to true players will be able to trade when they are in different dimensions
 # Set it to 1 if you want that (This will also ignore any distance)
 ignoreWorlds: false
+
+# Sound can also be in lower case not only upper but entity.illusioner.hurt will not be accepted you need to put
+# entity_illusioner_hurt
+# This sound will be for example when trading starts
+EnablePositiveSounds: True
+PositiveSound: 'ENTITY_EXPERIENCE_ORB_PICKUP'
+
+# This sound is player for example when player is too far away from trading partner
+EnableNegativeSounds: True
+NegativeSound: 'BLOCK_NOTE_BLOCK_BASS'

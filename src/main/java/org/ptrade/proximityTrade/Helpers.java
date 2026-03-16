@@ -38,11 +38,13 @@ public class Helpers {
     }
 
     public static void PlayPositiveSound(Player p){
-        p.playSound(p.getLocation(), Globals.positiveS, 1.0f, 1.0f);
+        if(!MainConfig.enablePossitiveSound){return; }
+        p.playSound(p.getLocation(), MainConfig.positiveS, 1.0f, 1.0f);
     }
 
     public static void PlayNegativeSound(Player p){
-        p.playSound(p.getLocation(), Globals.negativeS, 3.0f, 1.0f);
+        if(!MainConfig.enableNegativeSound){return; }
+        p.playSound(p.getLocation(), MainConfig.negativeS, 1.0f, 1.0f);
     }
 
     public static void RunTask(Plugin plugin, Runnable task, int delay) {
