@@ -1,5 +1,6 @@
 package org.ptrade.proximityTrade;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -16,6 +17,14 @@ public class MainConfig {
 
     private static Sound LoadSound(String name, Plugin p){
         String strUpper = name.toUpperCase();
+        // Replacing Spaces with _
+        if(strUpper.contains(" ")){
+            strUpper = strUpper.replace(" ", "_");
+        }
+        // Replacing Dots with _
+        if(strUpper.contains(".")){
+            strUpper = strUpper.replace(".", "_");
+        }
         try{
             return Sound.valueOf(strUpper);
         }
