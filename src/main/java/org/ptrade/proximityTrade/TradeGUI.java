@@ -97,6 +97,11 @@ public class TradeGUI {
         }
 
         ItemStack playerFinalItem = playerTop.getItem(48);
+        if(playerFinalItem == null){
+            Bukkit.getLogger ().info ("Unexpected error in TradeGUI TryToFinalize playerFinalItem is null"
+                                      + "please report this to plugin creator");
+            return false;
+        }
         if(playerFinalItem.getType() != Material.ENCHANTED_BOOK){
             playerFinalItem.setType(Material.ENCHANTED_BOOK);
             ItemStack partnerFinalItem = partnerTop.getItem(50);
@@ -195,30 +200,46 @@ public class TradeGUI {
         InventoryView partnerView = partner.getOpenInventory();
         InventoryView playerView = player.getOpenInventory();
 
-        if (!partnerView.getTitle().equals("Trading with " + player.getName()))
+        if (!partnerView.getTitle().equals("Trading with " + player.getName())){
             return;
+        }
 
         Inventory playerTop = playerView.getTopInventory();
         Inventory partnerTop = partnerView.getTopInventory();
-        ItemStack item = playerTop.getItem(45);
-        if(item.getType() == Material.RED_CONCRETE){
-            item.setType(Material.LIME_CONCRETE);
-            ItemMeta meta = item.getItemMeta();
+        ItemStack playerConfItem = playerTop.getItem(45);
+        if(playerConfItem == null){
+            Bukkit.getLogger ().info ("Unexpected error in TradeGUI TryToFinalize playerConfItem is null"
+                                      + "please report this to plugin creator");
+            return;
+        }
+        if(playerConfItem.getType() == Material.RED_CONCRETE){
+            playerConfItem.setType(Material.LIME_CONCRETE);
+            ItemMeta meta = playerConfItem.getItemMeta();
             List<String> metaList = new ArrayList<>();
             metaList.add("Confirmed");
             meta.setLore(metaList);
-            item.setItemMeta(meta);
-            item =  partnerTop.getItem(53);
-            if(item.getType() == Material.RED_CONCRETE){
-                item.setType(Material.LIME_CONCRETE);
-                meta = item.getItemMeta();
-                metaList = new ArrayList<>();
-                metaList.add("Confirmed");
-                meta.setLore(metaList);
-                item.setItemMeta(meta);
-                Helpers.PlayPositiveSound (player);
-                Helpers.PlayPositiveSound (partner);
-            }
+            playerConfItem.setItemMeta(meta);
+        }
+        else{
+            return;
+        }
+
+        ItemStack partnerConfItem = partnerTop.getItem(53);
+        if(partnerConfItem == null){
+            Bukkit.getLogger ().info ("Unexpected error in TradeGUI TryToFinalize partnerConfItem is null"
+                                      + "please report this to plugin creator");
+            return;
+        }
+        if(partnerConfItem.getType() == Material.RED_CONCRETE){
+            partnerConfItem.setType(Material.LIME_CONCRETE);
+            ItemMeta meta = partnerConfItem.getItemMeta();
+            List<String> metaList = new ArrayList<>();
+            metaList = new ArrayList<>();
+            metaList.add("Confirmed");
+            meta.setLore(metaList);
+            partnerConfItem.setItemMeta(meta);
+            Helpers.PlayPositiveSound (player);
+            Helpers.PlayPositiveSound (partner);
         }
     }
 
