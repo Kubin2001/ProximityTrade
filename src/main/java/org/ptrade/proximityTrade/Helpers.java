@@ -15,6 +15,8 @@ import java.util.Random;
 public class Helpers {
     private static Random rand = null;
 
+    public final static boolean isPremium = true;
+
     public static void Init() {
         rand = new Random();
     }

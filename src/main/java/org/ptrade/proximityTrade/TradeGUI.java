@@ -51,6 +51,21 @@ public class TradeGUI {
 
         inv.setItem(53, confPartner);
 
+        if(Helpers.isPremium){
+            ItemStack xpDown =  Helpers.CreateItem(Material.EXPERIENCE_BOTTLE,
+                                                        Helpers.CFormat("&4&lRemove Level"),"0");
+            ItemStack xpUp =  Helpers.CreateItem(Material.EXPERIENCE_BOTTLE,
+                                                   Helpers.CFormat("&2&lAdd Level"),"0");
+
+            ItemStack levelInfoPartner =  Helpers.CreateItem(Material.EXPERIENCE_BOTTLE,
+                                                      Helpers.CFormat("&6&lPartner Levels: 0"),"");
+
+            inv.setItem(36, xpDown);
+            inv.setItem(37, xpUp);
+
+            inv.setItem(44, levelInfoPartner);
+        }
+
         return  inv;
     }
 

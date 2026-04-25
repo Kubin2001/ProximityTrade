@@ -1,4 +1,4 @@
-name: ProximityTrade
+name: ProximityTradePro
 version: '1.0.9'
 main: org.ptrade.proximityTrade.ProximityTrade
 api-version: '1.21'
