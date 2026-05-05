@@ -58,7 +58,7 @@ public class TradeGUI {
                                                    Helpers.CFormat("&2&lAdd Level"),"0");
 
             ItemStack levelInfoPartner =  Helpers.CreateItem(Material.EXPERIENCE_BOTTLE,
-                                                      Helpers.CFormat("&6&lPartner Levels: 0"),"");
+                                                      Helpers.CFormat("&6&lPartner Levels"),"0");
 
             inv.setItem(36, xpDown);
             inv.setItem(37, xpUp);
@@ -306,4 +306,89 @@ public class TradeGUI {
         }
         inventory.clear();
     }
+
+    private static boolean UpdateItemXpMeta(ItemStack item, int playerLevel, int change, boolean direct){
+        if(item == null){
+            Bukkit.getLogger ().info ("[ERROR] UpdateItemXpMeta got null item report this to plugin creator");
+            return  false;
+        }
+        ItemMeta xpMeta = item.getItemMeta ();
+        if(xpMeta == null){
+            Bukkit.getLogger ().info ("Cannot update item xp lore report this to server administrator");
+            return false;
+        }
+        List<String> lore = xpMeta.getLore ();
+        if(lore == null){
+            Bukkit.getLogger ().info ("Cannot update item xp lore report this to server administrator");
+            return false;
+        }
+        if(lore.isEmpty ()){
+            Bukkit.getLogger ().info ("Cannot update item xp lore report this to server administrator");
+            return false;
+        }
+        String xpStr = lore.getFirst ();
+        int xpVal = 0;
+        try {
+            xpVal = Integer.parseInt (xpStr);
+        }
+        catch (NumberFormatException ex){
+            Bukkit.getLogger ().info ("Cannot update item xp lore report this to server administrator");
+            return false;
+        }
+
+        xpVal += change;
+        if(direct){
+            lore.set(0, String.valueOf(xpVal));
+            xpMeta.setLore(lore);
+            item.setItemMeta(xpMeta);
+            return  true;
+        }
+
+
+
+        if(change > 0 && playerLevel < xpVal){
+            return false;
+        }
+        else if (change < 0 && xpVal < 0){
+            return  false;
+        }
+
+        lore.set(0, String.valueOf(xpVal));
+        xpMeta.setLore(lore);
+        item.setItemMeta(xpMeta);
+
+        return true;
+    }
+
+    public static boolean ModifyXp(Player player , Player partner, int val){
+        InventoryView partnerView = partner.getOpenInventory();
+        InventoryView playerView = player.getOpenInventory();
+
+        if (!partnerView.getTitle().equals("Trading with " + player.getName())){
+            return false;
+        }
+
+        Inventory playerTop = playerView.getTopInventory();
+        Inventory partnerTop = partnerView.getTopInventory();
+        ItemStack playerXPRemoveItem = playerTop.getItem(36); // Bootle remove xp
+        ItemStack playerXPAddItem = playerTop.getItem(37); // Bootle add xp
+
+        if(!UpdateItemXpMeta (playerXPAddItem, player.getLevel (),val,false)){
+            return false;
+        }
+        if(!UpdateItemXpMeta (playerXPRemoveItem, player.getLevel (),val,false)){
+            return false;
+        }
+
+        return true;
+    }
+
+    public static void UpdatePartnerXp(Player partner, int change){
+        InventoryView partnerView = partner.getOpenInventory();
+        Inventory partnerTop = partnerView.getTopInventory();
+        ItemStack item = partnerTop.getItem(44);
+
+        UpdateItemXpMeta(item, partner.getLevel(), change,true);
+    }
+
 }

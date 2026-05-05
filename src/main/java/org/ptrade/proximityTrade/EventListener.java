@@ -88,6 +88,21 @@ public class EventListener implements org.bukkit.event.Listener {
                 boolean isRange2 = (slot >= 9 && slot <= 12);
                 boolean isRange3 = (slot >= 18 && slot <= 21);
 
+                if(Helpers.isPremium){
+                    if(slot == 36 && TradeGUI.ModifyXp (p,otherPlayer,-1)){
+
+                        Bukkit.getScheduler().runTask(plugin, () -> {
+                            TradeGUI.UpdatePartnerXp(otherPlayer,-1);
+                        });
+                    }
+                    if(slot == 37 && TradeGUI.ModifyXp (p,otherPlayer,1)){
+                        Bukkit.getScheduler().runTask(plugin, () -> {
+                            TradeGUI.UpdatePartnerXp(otherPlayer,1);
+                        });
+                    }
+                }
+
+
                 if(slot == 48){
                     if(TradeGUI.TryToFinalize(p,otherPlayer)){
                         TradeGUI.Finalize(p,otherPlayer);
