@@ -13,6 +13,33 @@ import java.util.HashMap;
 import java.util.List;
 
 public class TradeGUI {
+    private static int GetExpFromLevel(int level) {
+        if (level <= 16) {
+            return (int) (Math.pow(level, 2) + (6 * level));
+        } else if (level <= 31) {
+            return (int) (2.5 * Math.pow(level, 2) - 40.5 * level + 360);
+        } else {
+            return (int) (4.5 * Math.pow(level, 2) - 162.5 * level + 2220);
+        }
+    }
+
+    private static int GetTotalExperience(Player player) {
+        int level = player.getLevel();
+        int expFromLevel = GetExpFromLevel(level);
+        int expInBar = Math.round(player.getExpToLevel() * player.getExp());
+        return expFromLevel + expInBar;
+    }
+
+    public static void RemoveExperience(Player player, int amount) {
+        int currentTotalXP = GetTotalExperience(player);
+        int newXP = Math.max(0, currentTotalXP - amount);
+
+        player.setExp(0);
+        player.setLevel(0);
+        player.setTotalExperience(0);
+        player.giveExp(newXP);
+    }
+
     public static Inventory Create(Player p, Player target){
         Inventory inv =  Bukkit.createInventory(p,54, "Trading with " + target.getName());
         // Vertical Line
@@ -172,6 +199,28 @@ public class TradeGUI {
         Inventory playerTop = playerView.getTopInventory();
         Inventory partnerTop = partnerView.getTopInventory();
 
+        if(Helpers.isPremium){
+            ItemStack playerXPRemoveItem = playerTop.getItem(36); // Xp for trade partner
+            ItemStack partnerXPRemoveItem = partnerTop.getItem(36); // Xp for player
+            if(playerXPRemoveItem != null  &&  partnerXPRemoveItem != null){
+                int xpForPlayer = GetXPValue (partnerXPRemoveItem);
+                int xpForPartner = GetXPValue (playerXPRemoveItem);
+                if(xpForPlayer != 0){
+                    int xpPointsForPlayer = GetExpFromLevel (xpForPlayer);
+                    player.giveExp (xpPointsForPlayer);
+                    RemoveExperience (partner,xpPointsForPlayer);
+                    Helpers.SendFormated (player, "&2You received " + xpPointsForPlayer + " xp points");
+                }
+                if(xpForPartner != 0){
+                    int xpPointsForPartner = GetExpFromLevel (xpForPartner);
+                    partner.giveExp (xpPointsForPartner);
+                    RemoveExperience (player, xpPointsForPartner);
+                    Helpers.SendFormated (partner, "&2You received " + xpPointsForPartner + " xp points");
+                }
+            }
+        }
+
+
         ArrayList<ItemStack> playerItems = GetInvItems(partnerTop);
         ArrayList<ItemStack> partnerItems = GetInvItems(playerTop);
 
@@ -305,6 +354,29 @@ public class TradeGUI {
             player.getWorld().dropItemNaturally(player.getLocation(),item);
         }
         inventory.clear();
+    }
+
+    private static int GetXPValue(ItemStack item){
+        ItemMeta xpMeta = item.getItemMeta ();
+        if(xpMeta == null){
+            Bukkit.getLogger ().info ("Cannot get xp lore report this to server administrator");
+            return 0;
+        }
+        List<String> lore = xpMeta.getLore ();
+        if(lore == null){
+            Bukkit.getLogger ().info ("Cannot get xp lore report this to server administrator");
+            return 0;
+        }
+        String xpStr = lore.getFirst ();
+        int xpVal = 0;
+        try {
+            xpVal = Integer.parseInt (xpStr);
+        }
+        catch (NumberFormatException ex){
+            Bukkit.getLogger ().info ("Cannot convert lore to xp value report this to server administrator");
+            return 0;
+        }
+        return xpVal;
     }
 
     private static boolean UpdateItemXpMeta(ItemStack item, int playerLevel, int change, boolean direct){
