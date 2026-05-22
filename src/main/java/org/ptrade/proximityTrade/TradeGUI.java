@@ -124,45 +124,34 @@ public class TradeGUI {
     }
 
     public static boolean TryToFinalize(Player player , Player partner){
-        InventoryView partnerView = partner.getOpenInventory();
+        TradeStatus playerStatus = TradeList.GetStatus (player.getUniqueId ());
+        TradeStatus partnerStatus = TradeList.GetStatus (partner.getUniqueId ());
+        if(playerStatus == null || partnerStatus == null){ return false;}
+
         InventoryView playerView = player.getOpenInventory();
+        InventoryView partnerView = partner.getOpenInventory();
 
-        if (!partnerView.getTitle().equals("Trading with " + player.getName())){
-            return false;
-        }
-
-        Inventory playerTop = playerView.getTopInventory();
-        Inventory partnerTop = partnerView.getTopInventory();
-
-        if(!CheckIfConfirmed(player) || !CheckIfConfirmed(partner)){
-            return false;
-        }
-
-        ItemStack playerFinalItem = playerTop.getItem(48);
-        if(playerFinalItem == null){
-            Bukkit.getLogger ().info ("Unexpected error in TradeGUI TryToFinalize playerFinalItem is null"
-                                      + "please report this to plugin creator");
-            return false;
-        }
-        if(playerFinalItem.getType() != Material.ENCHANTED_BOOK){
-            playerFinalItem.setType(Material.ENCHANTED_BOOK);
-            ItemStack partnerFinalItem = partnerTop.getItem(50);
-            partnerFinalItem.setType(Material.ENCHANTED_BOOK);
-            Helpers.PlayPositiveSound (player);
-            Helpers.PlayPositiveSound (partner);
-
-        }
-
-        ItemStack partnerFinalItem = partnerTop.getItem(48);
-        if(partnerFinalItem == null){
+        if(!playerStatus.confirmed || !partnerStatus.confirmed){
             return  false;
         }
-        if(partnerFinalItem.getType() != Material.ENCHANTED_BOOK){
-            return false;
+        Inventory playerTop = playerView.getTopInventory();
+        ItemStack playerFinalItem = playerTop.getItem(48);
+        if(!UpdateItem (playerFinalItem, Material.ENCHANTED_BOOK,null,null )){
+            return  false;
         }
-        else{
+        playerStatus.finalized = true;
+        Helpers.PlayPositiveSound (player);
+        Helpers.PlayPositiveSound (partner);
+        // Update partner info if player has finalized
+        Inventory partnerTop = partnerView.getTopInventory();
+        ItemStack partnerFinalItem = partnerTop.getItem(50);
+        if(!UpdateItem (partnerFinalItem, Material.ENCHANTED_BOOK,null,null )){
+            return  false;
+        }
+        if(playerStatus.finalized && partnerStatus.finalized){
             return true;
         }
+        return false;
     }
 
     private static ArrayList<ItemStack> GetInvItems(Inventory inv){
@@ -193,6 +182,12 @@ public class TradeGUI {
     }
 
     public static void Finalize(Player player , Player partner){
+        TradeStatus playerStatus = TradeList.GetStatus (player.getUniqueId ());
+        TradeStatus partnerStatus = TradeList.GetStatus (partner.getUniqueId ());
+        if(playerStatus == null || partnerStatus == null){
+            Bukkit.getLogger ().info ("Unexpected error player or partner has no status");
+            return;
+        }
         InventoryView partnerView = partner.getOpenInventory();
         InventoryView playerView = player.getOpenInventory();
 
@@ -203,8 +198,8 @@ public class TradeGUI {
             ItemStack playerXPRemoveItem = playerTop.getItem(36); // Xp for trade partner
             ItemStack partnerXPRemoveItem = partnerTop.getItem(36); // Xp for player
             if(playerXPRemoveItem != null  &&  partnerXPRemoveItem != null){
-                int xpForPlayer = GetXPValue (partnerXPRemoveItem);
-                int xpForPartner = GetXPValue (playerXPRemoveItem);
+                int xpForPlayer = partnerStatus.xpVal;
+                int xpForPartner = playerStatus.xpVal;
                 if(xpForPlayer != 0){
                     int xpPointsForPlayer = GetExpFromLevel (xpForPlayer);
                     player.giveExp (xpPointsForPlayer);
@@ -220,15 +215,12 @@ public class TradeGUI {
             }
         }
 
-
         ArrayList<ItemStack> playerItems = GetInvItems(partnerTop);
         ArrayList<ItemStack> partnerItems = GetInvItems(playerTop);
 
         partnerTop.clear();
         playerTop.clear();
 
-        TradeStatus playerStatus = TradeList.GetStatus(player.getUniqueId());
-        TradeStatus partnerStatus = TradeList.GetStatus(partner.getUniqueId());
         playerStatus.Clear();
         partnerStatus.Clear();
 
@@ -237,30 +229,63 @@ public class TradeGUI {
             playerInv.setItem(i,playerItems.get(i));
         }
         player.openInventory(playerInv);
+        Helpers.PlayPositiveSound (player);
 
         Inventory partnerInv = Bukkit.createInventory(partner,54, "Trade Outcome");
         for(int i = 0; i < partnerItems.size(); i++){
             partnerInv.setItem(i,partnerItems.get(i));
         }
         partner.openInventory(partnerInv);
+        Helpers.PlayPositiveSound (partner);
 
     }
 
     public static boolean CheckIfConfirmed(Player player){
-        InventoryView playerView = player.getOpenInventory();
-        Inventory playerTop = playerView.getTopInventory();
-        ItemStack confirmItem = playerTop.getItem(45);
-        if (confirmItem == null || confirmItem.getType().isAir()){
-            return false;
+        TradeStatus playerStatus = TradeList.GetStatus (player.getUniqueId ());
+        if(playerStatus == null){
+            return  false;
         }
-
-        if(confirmItem.getType() == Material.LIME_CONCRETE){
-            return  true;
-        }
-        return  false;
+        return  playerStatus.confirmed;
     }
 
+    private static boolean UpdateItem(ItemStack item, Material newMaterial, String newName, String newLore){
+        if(item == null){
+            return  false;
+        }
+        if(newMaterial != null){
+            item.setType (newMaterial);
+        }
+        ItemMeta meta = item.getItemMeta ();
+        if(meta == null){
+            return  false;
+        }
+        if(newName != null){
+            meta.setDisplayName (newName);
+        }
+
+        item.setItemMeta (meta);
+        if(newLore != null){
+            List<String> lore = new ArrayList<> ();
+            lore.add (newLore);
+            meta.setLore (lore);
+        }
+        item.setItemMeta (meta);
+
+        return true;
+    }
+
+    // Called when player click confirm item it updatedes its status and viev for partner
     public static void UpdatePartnerConfirmStatus(Player player , Player partner){
+        TradeStatus playerStatus = TradeList.GetStatus (player.getUniqueId ());
+        TradeStatus partnerStatus = TradeList.GetStatus (partner.getUniqueId ());
+        if(playerStatus == null || partnerStatus == null){
+            Bukkit.getLogger ().info ("Unexpected error player or partner has no status");
+            return;
+        }
+        if(playerStatus.confirmed){ // If it is already confirmed no need to check anything
+            return;
+        }
+
         InventoryView partnerView = partner.getOpenInventory();
         InventoryView playerView = player.getOpenInventory();
 
@@ -270,6 +295,8 @@ public class TradeGUI {
 
         Inventory playerTop = playerView.getTopInventory();
         Inventory partnerTop = partnerView.getTopInventory();
+
+
         ItemStack playerConfItem = playerTop.getItem(45);
         if(playerConfItem == null){
             Bukkit.getLogger ().info ("Unexpected error in TradeGUI TryToFinalize playerConfItem is null"
@@ -277,12 +304,8 @@ public class TradeGUI {
             return;
         }
         if(playerConfItem.getType() == Material.RED_CONCRETE){
-            playerConfItem.setType(Material.LIME_CONCRETE);
-            ItemMeta meta = playerConfItem.getItemMeta();
-            List<String> metaList = new ArrayList<>();
-            metaList.add("Confirmed");
-            meta.setLore(metaList);
-            playerConfItem.setItemMeta(meta);
+            UpdateItem (playerConfItem, Material.LIME_CONCRETE, null, "Confirmed");
+            playerStatus.confirmed = true;
         }
         else{
             return;
@@ -295,13 +318,7 @@ public class TradeGUI {
             return;
         }
         if(partnerConfItem.getType() == Material.RED_CONCRETE){
-            partnerConfItem.setType(Material.LIME_CONCRETE);
-            ItemMeta meta = partnerConfItem.getItemMeta();
-            List<String> metaList = new ArrayList<>();
-            metaList = new ArrayList<>();
-            metaList.add("Confirmed");
-            meta.setLore(metaList);
-            partnerConfItem.setItemMeta(meta);
+            UpdateItem (partnerConfItem, Material.LIME_CONCRETE, null, "Confirmed");
             Helpers.PlayPositiveSound (player);
             Helpers.PlayPositiveSound (partner);
         }
@@ -356,83 +373,33 @@ public class TradeGUI {
         inventory.clear();
     }
 
-    private static int GetXPValue(ItemStack item){
-        ItemMeta xpMeta = item.getItemMeta ();
-        if(xpMeta == null){
-            Bukkit.getLogger ().info ("Cannot get xp lore report this to server administrator");
-            return 0;
-        }
-        List<String> lore = xpMeta.getLore ();
-        if(lore == null){
-            Bukkit.getLogger ().info ("Cannot get xp lore report this to server administrator");
-            return 0;
-        }
-        String xpStr = lore.getFirst ();
-        int xpVal = 0;
-        try {
-            xpVal = Integer.parseInt (xpStr);
-        }
-        catch (NumberFormatException ex){
-            Bukkit.getLogger ().info ("Cannot convert lore to xp value report this to server administrator");
-            return 0;
-        }
-        return xpVal;
-    }
+    private static boolean UpdateItemXpMeta(ItemStack item, int playerLevel, int newVal, boolean force){
+        if(force){
+            if(!UpdateItem (item,null,null,String.valueOf (newVal))){
+                Bukkit.getLogger ().info ("[ERROR] UpdateItemXpMeta cannot update item");
+                return  false;
+            }
 
-    private static boolean UpdateItemXpMeta(ItemStack item, int playerLevel, int change, boolean direct){
-        if(item == null){
-            Bukkit.getLogger ().info ("[ERROR] UpdateItemXpMeta got null item report this to plugin creator");
-            return  false;
-        }
-        ItemMeta xpMeta = item.getItemMeta ();
-        if(xpMeta == null){
-            Bukkit.getLogger ().info ("Cannot update item xp lore report this to server administrator");
-            return false;
-        }
-        List<String> lore = xpMeta.getLore ();
-        if(lore == null){
-            Bukkit.getLogger ().info ("Cannot update item xp lore report this to server administrator");
-            return false;
-        }
-        if(lore.isEmpty ()){
-            Bukkit.getLogger ().info ("Cannot update item xp lore report this to server administrator");
-            return false;
-        }
-        String xpStr = lore.getFirst ();
-        int xpVal = 0;
-        try {
-            xpVal = Integer.parseInt (xpStr);
-        }
-        catch (NumberFormatException ex){
-            Bukkit.getLogger ().info ("Cannot update item xp lore report this to server administrator");
-            return false;
-        }
-
-        xpVal += change;
-        if(direct){
-            lore.set(0, String.valueOf(xpVal));
-            xpMeta.setLore(lore);
-            item.setItemMeta(xpMeta);
             return  true;
         }
 
-
-
-        if(change > 0 && playerLevel < xpVal){
+        if(playerLevel < newVal || newVal < 0){
             return false;
         }
-        else if (change < 0 && xpVal < 0){
+        if(!UpdateItem (item,null,null,String.valueOf (newVal))){
+            Bukkit.getLogger ().info ("[ERROR] UpdateItemXpMeta cannot update item");
             return  false;
         }
-
-        lore.set(0, String.valueOf(xpVal));
-        xpMeta.setLore(lore);
-        item.setItemMeta(xpMeta);
-
         return true;
     }
 
     public static boolean ModifyXp(Player player , Player partner, int val){
+        TradeStatus playerStatus = TradeList.GetStatus (player.getUniqueId ());
+        TradeStatus partnerStatus = TradeList.GetStatus (partner.getUniqueId ());
+        if(playerStatus == null || partnerStatus == null){
+            Bukkit.getLogger ().info ("Unexpected error player or partner has no status");
+            return false;
+        }
         InventoryView partnerView = partner.getOpenInventory();
         InventoryView playerView = player.getOpenInventory();
 
@@ -441,26 +408,26 @@ public class TradeGUI {
         }
 
         Inventory playerTop = playerView.getTopInventory();
-        Inventory partnerTop = partnerView.getTopInventory();
         ItemStack playerXPRemoveItem = playerTop.getItem(36); // Bootle remove xp
         ItemStack playerXPAddItem = playerTop.getItem(37); // Bootle add xp
 
-        if(!UpdateItemXpMeta (playerXPAddItem, player.getLevel (),val,false)){
+        int newVal = playerStatus.xpVal + val;
+        if(!UpdateItemXpMeta (playerXPAddItem, player.getLevel (),newVal,false)){
             return false;
         }
-        if(!UpdateItemXpMeta (playerXPRemoveItem, player.getLevel (),val,false)){
+        if(!UpdateItemXpMeta (playerXPRemoveItem, player.getLevel (),newVal,false)){
             return false;
         }
-
+        playerStatus.xpVal = newVal;
         return true;
     }
 
-    public static void UpdatePartnerXp(Player partner, int change){
+    public static void UpdatePartnerXp(Player partner, int val){
+        TradeStatus partnerStatus = TradeList.GetStatus (partner.getUniqueId ());
         InventoryView partnerView = partner.getOpenInventory();
         Inventory partnerTop = partnerView.getTopInventory();
         ItemStack item = partnerTop.getItem(44);
 
-        UpdateItemXpMeta(item, partner.getLevel(), change,true);
+        UpdateItemXpMeta(item, partner.getLevel(), val,true);
     }
-
 }

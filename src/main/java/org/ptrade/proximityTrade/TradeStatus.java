@@ -8,6 +8,9 @@ import java.util.UUID;
 public class TradeStatus {
     public UUID lastOffer = null;
     public boolean trading = false;
+    public int xpVal = 0;
+    public boolean confirmed = false;
+    public  boolean finalized = false;
 
     TradeStatus(Player p, boolean trading){
         if(p != null){
@@ -19,6 +22,9 @@ public class TradeStatus {
     void Clear(){
         lastOffer = null;
         trading = false;
+        xpVal = 0;
+        confirmed = false;
+        finalized = false;
     }
 
     Player GetLastOffer(){

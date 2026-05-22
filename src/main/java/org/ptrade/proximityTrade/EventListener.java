@@ -77,7 +77,9 @@ public class EventListener implements org.bukkit.event.Listener {
             status.Clear();
             return;
         }
+
         if(title.equals("Trading with " + otherPlayer.getName())){
+
             Inventory top = event.getView().getTopInventory();
             Inventory bottom = event.getView().getBottomInventory();
             Inventory clickedInv = event.getClickedInventory();
@@ -92,12 +94,12 @@ public class EventListener implements org.bukkit.event.Listener {
                     if(slot == 36 && TradeGUI.ModifyXp (p,otherPlayer,-1)){
 
                         Bukkit.getScheduler().runTask(plugin, () -> {
-                            TradeGUI.UpdatePartnerXp(otherPlayer,-1);
+                            TradeGUI.UpdatePartnerXp(otherPlayer,status.xpVal);
                         });
                     }
                     if(slot == 37 && TradeGUI.ModifyXp (p,otherPlayer,1)){
                         Bukkit.getScheduler().runTask(plugin, () -> {
-                            TradeGUI.UpdatePartnerXp(otherPlayer,1);
+                            TradeGUI.UpdatePartnerXp(otherPlayer,status.xpVal);
                         });
                     }
                 }
