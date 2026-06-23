@@ -36,6 +36,12 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sen, @NotNull Command command, @NotNull String label, @NotNull String[] args){
+        if(Helpers.hasEconomy){
+            Bukkit.getLogger ().info ("This plugin has valut");
+        }
+        else{
+            Bukkit.getLogger ().info ("This plugin does not have vault");
+        }
         if(!(sen instanceof Player sender)){return false;}
 
         if(args.length != 1){return false;}

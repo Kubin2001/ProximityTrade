@@ -17,6 +17,10 @@ public class Helpers {
 
     public final static boolean isPremium = false;
 
+    public static VaultHook ecoHook = null;
+
+    public static boolean hasEconomy = false;
+
     public static void Init() {
         rand = new Random();
     }
