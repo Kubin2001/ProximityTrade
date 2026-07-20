@@ -104,6 +104,19 @@ public class EventListener implements org.bukkit.event.Listener {
                     }
                 }
 
+                if(Helpers.isPremium && Helpers.hasEconomy){
+                    if(slot == 38 && TradeGUI.ModifyMoney (p,otherPlayer,-100)){
+                        Bukkit.getScheduler().runTask(plugin, () -> {
+                            TradeGUI.UpdatePartnerMoney(otherPlayer,status.money);
+                        });
+                    }
+                    if(slot == 39 && TradeGUI.ModifyMoney (p,otherPlayer,100)){
+                        Bukkit.getScheduler().runTask(plugin, () -> {
+                            TradeGUI.UpdatePartnerMoney(otherPlayer,status.money);
+                        });
+                    }
+                }
+
 
                 if(slot == 48){
                     if(TradeGUI.TryToFinalize(p,otherPlayer)){

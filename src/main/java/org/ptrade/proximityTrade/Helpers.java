@@ -15,7 +15,7 @@ import java.util.Random;
 public class Helpers {
     private static Random rand = null;
 
-    public final static boolean isPremium = false;
+    public final static boolean isPremium = true;
 
     public static VaultHook ecoHook = null;
 

@@ -11,6 +11,7 @@ public class TradeStatus {
     public int xpVal = 0;
     public boolean confirmed = false;
     public  boolean finalized = false;
+    public double money = 0.0;
 
     TradeStatus(Player p, boolean trading){
         if(p != null){
@@ -23,6 +24,7 @@ public class TradeStatus {
         lastOffer = null;
         trading = false;
         xpVal = 0;
+        money = 0.0;
         confirmed = false;
         finalized = false;
     }

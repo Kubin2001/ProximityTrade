@@ -1,5 +1,6 @@
 package org.ptrade.proximityTrade;
 
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -93,6 +94,20 @@ public class TradeGUI {
             inv.setItem(44, levelInfoPartner);
         }
 
+        // Economy trading money
+        if(Helpers.isPremium && Helpers.hasEconomy){
+            ItemStack moneyDown =  Helpers.CreateItem(Material.GOLD_NUGGET,
+                                                   Helpers.CFormat("&4&lRemove Money"),"0");
+            ItemStack moneyUp =  Helpers.CreateItem(Material.GOLD_NUGGET,
+                                                 Helpers.CFormat("&2&lAdd Money"),"0");
+
+            ItemStack moneyInfoPartner =  Helpers.CreateItem(Material.GOLD_NUGGET,
+                                                             Helpers.CFormat("&6&lPartner Money"),"0");
+            inv.setItem(38, moneyDown);
+            inv.setItem(39, moneyUp);
+
+            inv.setItem(43, moneyInfoPartner);
+        }
         return  inv;
     }
 
@@ -215,6 +230,26 @@ public class TradeGUI {
             }
         }
 
+        if (Helpers.isPremium && Helpers.hasEconomy) {
+            Economy eco = Helpers.ecoHook.getEconomy();
+            double moneyForPartner = playerStatus.money;
+            double moneyForPlayer = partnerStatus.money;
+            double playerBalance = eco.getBalance(player);
+            double partnerBalance = eco.getBalance(partner);
+
+            if (moneyForPartner > 0.0 && playerBalance >= moneyForPartner) {
+                eco.withdrawPlayer(player, moneyForPartner);
+                eco.depositPlayer(partner, moneyForPartner);
+                Helpers.SendFormated (partner, "&2You received " + moneyForPartner + " coins");
+            }
+
+            if (moneyForPlayer > 0.0 && partnerBalance >= moneyForPlayer) {
+                eco.withdrawPlayer(partner, moneyForPlayer);
+                eco.depositPlayer(player, moneyForPlayer);
+                Helpers.SendFormated (player, "&2You received " + moneyForPartner + " coins");
+            }
+        }
+
         ArrayList<ItemStack> playerItems = GetInvItems(partnerTop);
         ArrayList<ItemStack> partnerItems = GetInvItems(playerTop);
 
@@ -274,7 +309,7 @@ public class TradeGUI {
         return true;
     }
 
-    // Called when player click confirm item it updatedes its status and viev for partner
+    // Called when player click confirm item it updates its status and view for partner
     public static void UpdatePartnerConfirmStatus(Player player , Player partner){
         TradeStatus playerStatus = TradeList.GetStatus (player.getUniqueId ());
         TradeStatus partnerStatus = TradeList.GetStatus (partner.getUniqueId ());
@@ -379,7 +414,6 @@ public class TradeGUI {
                 Bukkit.getLogger ().info ("[ERROR] UpdateItemXpMeta cannot update item");
                 return  false;
             }
-
             return  true;
         }
 
@@ -392,6 +426,7 @@ public class TradeGUI {
         }
         return true;
     }
+
 
     public static boolean ModifyXp(Player player , Player partner, int val){
         TradeStatus playerStatus = TradeList.GetStatus (player.getUniqueId ());
@@ -408,8 +443,8 @@ public class TradeGUI {
         }
 
         Inventory playerTop = playerView.getTopInventory();
-        ItemStack playerXPRemoveItem = playerTop.getItem(36); // Bootle remove xp
-        ItemStack playerXPAddItem = playerTop.getItem(37); // Bootle add xp
+        ItemStack playerXPRemoveItem = playerTop.getItem(36); // Bottle remove xp
+        ItemStack playerXPAddItem = playerTop.getItem(37); // Bottle add xp
 
         int newVal = playerStatus.xpVal + val;
         if(!UpdateItemXpMeta (playerXPAddItem, player.getLevel (),newVal,false)){
@@ -422,12 +457,55 @@ public class TradeGUI {
         return true;
     }
 
-    public static void UpdatePartnerXp(Player partner, int val){
+    public static boolean ModifyMoney(Player player , Player partner, int val){
+        TradeStatus playerStatus = TradeList.GetStatus (player.getUniqueId ());
         TradeStatus partnerStatus = TradeList.GetStatus (partner.getUniqueId ());
+        if(playerStatus == null || partnerStatus == null){
+            Bukkit.getLogger ().info ("Unexpected error player or partner has no status");
+            return false;
+        }
+        InventoryView partnerView = partner.getOpenInventory();
+        InventoryView playerView = player.getOpenInventory();
+
+        if (!partnerView.getTitle().equals("Trading with " + player.getName())){
+            return false;
+        }
+
+        Inventory playerTop = playerView.getTopInventory();
+        ItemStack playerMoneyRemoveItem = playerTop.getItem(38); // Nugger remove money
+        ItemStack playerMoneyAddItemItem = playerTop.getItem(39); // Nugget add money
+
+        double currentVal = playerStatus.money;
+        double balance = Helpers.ecoHook.getEconomy ().getBalance (player);
+        double newVal = currentVal + val;
+        if(newVal > balance || newVal < 0){
+            return  false;
+        }
+        if(!UpdateItem (playerMoneyRemoveItem,null,null,String.valueOf ((int)newVal))){
+            Bukkit.getLogger ().info ("[ERROR] UpdateItemXpMeta cannot update item");
+            return  false;
+        }
+        if(!UpdateItem (playerMoneyAddItemItem,null,null,String.valueOf ((int)newVal))){
+            Bukkit.getLogger ().info ("[ERROR] UpdateItemXpMeta cannot update item");
+            return  false;
+        }
+        playerStatus.money = newVal;
+        return true;
+    }
+
+    public static void UpdatePartnerXp(Player partner, int val){
         InventoryView partnerView = partner.getOpenInventory();
         Inventory partnerTop = partnerView.getTopInventory();
         ItemStack item = partnerTop.getItem(44);
 
         UpdateItemXpMeta(item, partner.getLevel(), val,true);
+    }
+
+    public static void UpdatePartnerMoney(Player partner, double val){
+        InventoryView partnerView = partner.getOpenInventory();
+        Inventory partnerTop = partnerView.getTopInventory();
+        ItemStack item = partnerTop.getItem(43);
+
+        UpdateItem (item,null,null,String.valueOf ((int)val));
     }
 }
