@@ -4,6 +4,12 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+
 
 public class MainConfig {
     public static int maxTradeDistance = 50;
@@ -13,6 +19,9 @@ public class MainConfig {
     public static Sound negativeS = Sound.BLOCK_NOTE_BLOCK_BASS;
     public static boolean enablePositiveSound = true;
     public static boolean enableNegativeSound = true;
+
+    public static boolean logs = false;
+    public  static  LogOutput logOutput = LogOutput.Console;
 
     private static Sound LoadSound(String name, Plugin p){
         String strUpper = name.toUpperCase();
@@ -34,10 +43,29 @@ public class MainConfig {
     }
 
     public static void Load(Plugin plugin){
-        plugin.saveDefaultConfig();
+        File configF = new File(plugin.getDataFolder(), "config.yml");
+        if(!configF.exists()){
+            String fileName = "configBase.yml";
+            if(Helpers.isPremium) {
+                fileName = "configPremium.yml";
+            }
+            try(InputStream stream = plugin.getResource(fileName)){
+                if(stream == null) {
+                    plugin.getLogger().info("Error when streaming config please report this on plugin discord");
+                    return;
+                }
+                Files.copy(stream, configF.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+            catch (IOException e){
+                plugin.getLogger().info("Error when loading config please report this on plugin discord");
+            }
+        }
+
         plugin.reloadConfig();
 
-        FileConfiguration config = plugin.getConfig ();
+        FileConfiguration config = plugin.getConfig();
+
+
         maxTradeDistance = config.getInt("maxDistance",50);
         ignoreWorlds = config.getBoolean("ignoreWorlds",false);
 
@@ -46,6 +74,19 @@ public class MainConfig {
 
         enablePositiveSound = config.getBoolean ("EnablePositiveSounds", true);
         enableNegativeSound = config.getBoolean ("EnableNegativeSounds",true);
+
+        if(!Helpers.isPremium){ return;}
+        // TODO load premium settings
+        logs = config.getBoolean("LogTrades", false);
+
+        String logString = config.getString("LogType", "Console");
+        if(logString.equals("File")){
+            logOutput = LogOutput.File;
+        }
+        else{
+            logOutput = LogOutput.Console;
+
+        }
 
     }
 }
