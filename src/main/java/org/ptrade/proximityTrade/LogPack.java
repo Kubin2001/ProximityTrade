@@ -7,6 +7,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -30,8 +31,39 @@ public class LogPack {
     }
 
     private void SendLog(String log){
-        if(MainConfig.logOutput == LogOutput.File){
-            //TODO
+        Plugin plugin = Helpers.plugin;
+        if (MainConfig.logOutput == LogOutput.File) {
+            File folder = new File(plugin.getDataFolder(), "Logs");
+
+            if (!folder.exists()) {
+                if (!folder.mkdirs()) {
+                    plugin.getLogger().warning("Cannot create Logs folder!");
+                    return;
+                }
+            }
+
+            LocalDateTime now = LocalDateTime.now();
+            File logFile = new File(folder, now.getDayOfYear() + "_" + now.getYear() + ".log");
+            try {
+                if (!logFile.exists()) {
+                    if (!logFile.createNewFile()) {
+                        plugin.getLogger().warning("Cannot create log file!");
+                        return;
+                    }
+                }
+
+                try (FileWriter fw = new FileWriter(logFile, true);
+                     BufferedWriter bw = new BufferedWriter(fw);
+                     PrintWriter out = new PrintWriter(bw)) {
+
+                    out.println(log);
+                    out.println();
+                }
+
+            } catch (IOException e) {
+                plugin.getLogger().severe("Cannot write to log file: " + logFile.getName());
+                e.printStackTrace();
+            }
         }
         else{
            Helpers.plugin.getLogger().info(log);
