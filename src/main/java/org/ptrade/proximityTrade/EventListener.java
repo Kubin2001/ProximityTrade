@@ -92,7 +92,6 @@ public class EventListener implements org.bukkit.event.Listener {
 
                 if(Helpers.isPremium){
                     if(slot == 36 && TradeGUI.ModifyXp (p,otherPlayer,-1)){
-
                         Bukkit.getScheduler().runTask(plugin, () -> {
                             TradeGUI.UpdatePartnerXp(otherPlayer,status.xpVal);
                         });

@@ -7,6 +7,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,8 @@ public class Helpers {
     public static VaultHook ecoHook = null;
 
     public static boolean hasEconomy = false;
+
+    public static Plugin plugin = null;
 
     public static void Init() {
         rand = new Random();

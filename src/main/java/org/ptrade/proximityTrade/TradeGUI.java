@@ -253,6 +253,12 @@ public class TradeGUI {
         ArrayList<ItemStack> playerItems = GetInvItems(partnerTop);
         ArrayList<ItemStack> partnerItems = GetInvItems(playerTop);
 
+        if(Helpers.isPremium && MainConfig.logs){
+            // Player and partner items are swapped
+            LogPack lp = new LogPack(player, partner, playerStatus,partnerStatus, partnerItems, playerItems);
+            lp.Log();
+        }
+
         partnerTop.clear();
         playerTop.clear();
 
@@ -431,6 +437,9 @@ public class TradeGUI {
     public static boolean ModifyXp(Player player , Player partner, int val){
         TradeStatus playerStatus = TradeList.GetStatus (player.getUniqueId ());
         TradeStatus partnerStatus = TradeList.GetStatus (partner.getUniqueId ());
+        if(playerStatus.confirmed){
+            return  false;
+        }
         if(playerStatus == null || partnerStatus == null){
             Bukkit.getLogger ().info ("Unexpected error player or partner has no status");
             return false;
@@ -460,6 +469,9 @@ public class TradeGUI {
     public static boolean ModifyMoney(Player player , Player partner, int val){
         TradeStatus playerStatus = TradeList.GetStatus (player.getUniqueId ());
         TradeStatus partnerStatus = TradeList.GetStatus (partner.getUniqueId ());
+        if(playerStatus.confirmed){
+            return false;
+        }
         if(playerStatus == null || partnerStatus == null){
             Bukkit.getLogger ().info ("Unexpected error player or partner has no status");
             return false;

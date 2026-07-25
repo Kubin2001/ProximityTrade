@@ -7,7 +7,7 @@ public final class ProximityTrade extends JavaPlugin {
     @Override
     public void onEnable() {
         getLogger().info("Proximity Trade Starting");
-
+        Helpers.plugin = this;
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
             VaultHook ecoHook = new VaultHook();
             if (ecoHook.SetupEconomy()) {
@@ -28,6 +28,7 @@ public final class ProximityTrade extends JavaPlugin {
         }
         MainConfig.Load(this);
         Helpers.Init();
+
         getCommand("reload").setExecutor(new CommandReload(this));
         TradeCommand handler = new TradeCommand();
 
