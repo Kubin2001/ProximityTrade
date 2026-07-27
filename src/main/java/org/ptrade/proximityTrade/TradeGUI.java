@@ -44,7 +44,7 @@ public class TradeGUI {
     public static Inventory Create(Player p, Player target){
         Inventory inv =  Bukkit.createInventory(p,54, "Trading with " + target.getName());
         // Vertical Line
-        Material glassMat = Material.GRAY_STAINED_GLASS_PANE;
+        Material glassMat = MainConfig.borderMaterial;
         inv.setItem(4,  new ItemStack(glassMat));
         inv.setItem(13,  new ItemStack(glassMat));
         inv.setItem(22,  new ItemStack(glassMat));
@@ -60,32 +60,32 @@ public class TradeGUI {
         inv.setItem(34,  new ItemStack(glassMat));
         inv.setItem(35,  new ItemStack(glassMat));
 
-        ItemStack finalizeItem =  Helpers.CreateItem(Material.WRITABLE_BOOK,
+        ItemStack finalizeItem = Helpers.CreateItem(MainConfig.nonFinalizeMaterial,
                 Helpers.CFormat("&2&lFinalize"),"");
 
         inv.setItem(48, finalizeItem);
 
-        ItemStack finalizePartnerItem =  Helpers.CreateItem(Material.WRITABLE_BOOK,
+        ItemStack finalizePartnerItem = Helpers.CreateItem(MainConfig.nonFinalizeMaterial,
                 Helpers.CFormat("&2&lFinalize Partner"),"");
         inv.setItem(50, finalizePartnerItem);
 
-        ItemStack confPlayer =  Helpers.CreateItem(Material.RED_CONCRETE, Helpers.CFormat("&2&lConfirmation"),
+        ItemStack confPlayer =  Helpers.CreateItem(MainConfig.nonConfirmMaterial, Helpers.CFormat("&2&lConfirmation"),
                 "Not confirmed");
 
         inv.setItem(45, confPlayer);
 
-        ItemStack confPartner =  Helpers.CreateItem(Material.RED_CONCRETE,
+        ItemStack confPartner =  Helpers.CreateItem(MainConfig.nonConfirmMaterial,
                 Helpers.CFormat("&2&lTrade Partner Confirmation"), "Not confirmed");
 
         inv.setItem(53, confPartner);
 
         if(Helpers.isPremium){
-            ItemStack xpDown =  Helpers.CreateItem(Material.EXPERIENCE_BOTTLE,
+            ItemStack xpDown =  Helpers.CreateItem(MainConfig.removeXPMaterial,
                                                         Helpers.CFormat("&4&lRemove Level"),"0");
-            ItemStack xpUp =  Helpers.CreateItem(Material.EXPERIENCE_BOTTLE,
+            ItemStack xpUp =  Helpers.CreateItem(MainConfig.addXPMaterial,
                                                    Helpers.CFormat("&2&lAdd Level"),"0");
 
-            ItemStack levelInfoPartner =  Helpers.CreateItem(Material.EXPERIENCE_BOTTLE,
+            ItemStack levelInfoPartner =  Helpers.CreateItem(MainConfig.partnerXPMaterial,
                                                       Helpers.CFormat("&6&lPartner Levels"),"0");
 
             inv.setItem(36, xpDown);
@@ -96,12 +96,12 @@ public class TradeGUI {
 
         // Economy trading money
         if(Helpers.isPremium && Helpers.hasEconomy){
-            ItemStack moneyDown =  Helpers.CreateItem(Material.GOLD_NUGGET,
+            ItemStack moneyDown =  Helpers.CreateItem(MainConfig.removeMoneyMaterial,
                                                    Helpers.CFormat("&4&lRemove Money"),"0");
-            ItemStack moneyUp =  Helpers.CreateItem(Material.GOLD_NUGGET,
+            ItemStack moneyUp =  Helpers.CreateItem(MainConfig.addMoneyMaterial,
                                                  Helpers.CFormat("&2&lAdd Money"),"0");
 
-            ItemStack moneyInfoPartner =  Helpers.CreateItem(Material.GOLD_NUGGET,
+            ItemStack moneyInfoPartner =  Helpers.CreateItem(MainConfig.partnerMoneyMaterial,
                                                              Helpers.CFormat("&6&lPartner Money"),"0");
             inv.setItem(38, moneyDown);
             inv.setItem(39, moneyUp);
@@ -151,7 +151,7 @@ public class TradeGUI {
         }
         Inventory playerTop = playerView.getTopInventory();
         ItemStack playerFinalItem = playerTop.getItem(48);
-        if(!UpdateItem (playerFinalItem, Material.ENCHANTED_BOOK,null,null )){
+        if(!UpdateItem (playerFinalItem, MainConfig.finalizeMaterial,null,null )){
             return  false;
         }
         playerStatus.finalized = true;
@@ -160,7 +160,7 @@ public class TradeGUI {
         // Update partner info if player has finalized
         Inventory partnerTop = partnerView.getTopInventory();
         ItemStack partnerFinalItem = partnerTop.getItem(50);
-        if(!UpdateItem (partnerFinalItem, Material.ENCHANTED_BOOK,null,null )){
+        if(!UpdateItem (partnerFinalItem, MainConfig.finalizeMaterial,null,null )){
             return  false;
         }
         if(playerStatus.finalized && partnerStatus.finalized){
@@ -344,8 +344,8 @@ public class TradeGUI {
                                       + "please report this to plugin creator");
             return;
         }
-        if(playerConfItem.getType() == Material.RED_CONCRETE){
-            UpdateItem (playerConfItem, Material.LIME_CONCRETE, null, "Confirmed");
+        if(playerConfItem.getType() == MainConfig.nonConfirmMaterial){
+            UpdateItem (playerConfItem, MainConfig.confirmMaterial, null, "Confirmed");
             playerStatus.confirmed = true;
         }
         else{
@@ -358,8 +358,8 @@ public class TradeGUI {
                                       + "please report this to plugin creator");
             return;
         }
-        if(partnerConfItem.getType() == Material.RED_CONCRETE){
-            UpdateItem (partnerConfItem, Material.LIME_CONCRETE, null, "Confirmed");
+        if(partnerConfItem.getType() == MainConfig.nonConfirmMaterial){
+            UpdateItem (partnerConfItem, MainConfig.confirmMaterial, null, "Confirmed");
             Helpers.PlayPositiveSound (player);
             Helpers.PlayPositiveSound (partner);
         }

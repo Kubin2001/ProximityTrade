@@ -20,3 +20,32 @@ NegativeSound: 'BLOCK_NOTE_BLOCK_BASS'
 # Logging output of trade deals use 'File' for output to file or 'Console'
 LogTrades: True
 LogType: 'Console'
+
+# GUI materials
+# Accepted formats
+# GRAY_STAINED_GLASS
+# GRAY STAINED GLASS
+# GRAY.STAINED.GLASS
+# gray stained glass
+
+BorderMaterial: 'GRAY_STAINED_GLASS_PANE'
+
+NonConfirmMaterial: 'RED_CONCRETE'
+
+ConfirmMaterial: 'LIME_CONCRETE'
+
+NonFinalizeMaterial: 'WRITABLE_BOOK'
+
+FinalizeMaterial: 'ENCHANTED_BOOK'
+
+AddXPMaterial: 'EXPERIENCE_BOTTLE'
+
+RemoveXPMaterial: 'EXPERIENCE_BOTTLE'
+
+PartnerXPMaterial: 'EXPERIENCE_BOTTLE'
+
+AddMoneyMaterial: 'GOLD_NUGGET'
+
+RemoveMoneyMaterial: 'GOLD_NUGGET'
+
+PartnerMoneyMaterial: 'GOLD_NUGGET'
