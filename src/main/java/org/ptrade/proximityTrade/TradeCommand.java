@@ -67,7 +67,7 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
         if(receiver == sender){
             Helpers.SendFormated(sender,"&4You cannot offer trade proposal to yourself");
             Helpers.PlayNegativeSound (sender);
-            return  false;
+            return false;
         }
         TradeStatus senderStatus = TradeList.GetStatus(sender.getUniqueId());
         TradeStatus receiverStatus = TradeList.GetStatus(receiver.getUniqueId());
@@ -75,7 +75,7 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
         if(receiverStatus.trading){
             Helpers.SendFormated(sender,"&4This player is already trading with someone else");
             Helpers.PlayNegativeSound (sender);
-            return  true;
+            return true;
         }
 
         Player receiverLastOffer = receiverStatus.GetLastOffer();
@@ -92,6 +92,21 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
 
         }
         if(senderStatus.lastOffer == receiver.getUniqueId()){
+            if(Helpers.isPremium && Helpers.hasEconomy && MainConfig.tradeTax != 0){ // Check if they can pay tax at the end
+                double playerBalance = Helpers.ecoHook.getEconomy().getBalance(sender);
+                double receiverBalance = Helpers.ecoHook.getEconomy().getBalance(receiver);
+                if(playerBalance < MainConfig.tradeTax || receiverBalance < MainConfig.tradeTax){
+                    Helpers.PlayNegativeSound (sender);
+                    Helpers.PlayNegativeSound (receiver);
+                    senderStatus.Clear();
+                    receiverStatus.Clear();
+                    Helpers.SendFormated(sender, "&4Booth you and trade partner need to have at least: " +
+                            MainConfig.tradeTax + " balance to start trade TRADE CANCELED");
+                    Helpers.SendFormated(receiver, "&4Booth you and trade partner need to have at least: " +
+                            MainConfig.tradeTax + " balance to start trade TRADE CANCELED");
+                    return true;
+                }
+            }
             senderStatus.trading = true;
             receiverStatus.trading = true;
             senderStatus.lastOffer = receiver.getUniqueId();

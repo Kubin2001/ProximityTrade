@@ -87,8 +87,9 @@ public class LogPack {
         valid = true;
     }
 
-    public void Log(){
+    public void Log(boolean fail){
         Bukkit.getScheduler().runTaskAsynchronously(Helpers.plugin, () ->{
+
             StringBuilder msg = new StringBuilder();
 
             LocalDateTime now = LocalDateTime.now();
@@ -98,6 +99,11 @@ public class LogPack {
 
             if(!valid){
                 msg.append("Invalid\n");
+                SendLog(msg.toString());
+                return;
+            }
+            if(fail){
+                msg.append("Trade failed due to inability to pay tax\n");
                 SendLog(msg.toString());
                 return;
             }

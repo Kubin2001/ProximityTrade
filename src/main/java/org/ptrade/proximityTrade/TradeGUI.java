@@ -209,6 +209,53 @@ public class TradeGUI {
         Inventory playerTop = playerView.getTopInventory();
         Inventory partnerTop = partnerView.getTopInventory();
 
+        // Check if booth players have money
+        if(Helpers.isPremium && Helpers.hasEconomy && MainConfig.tradeTax != 0){
+            double playerBalance = Helpers.ecoHook.getEconomy().getBalance(player);
+            double receiverBalance = Helpers.ecoHook.getEconomy().getBalance(partner);
+            if(playerBalance >= MainConfig.tradeTax && receiverBalance >= MainConfig.tradeTax){
+                Helpers.SendFormated(player, "Trade tax taken: " + MainConfig.tradeTax);
+                Helpers.SendFormated(partner, "Trade tax taken: " + MainConfig.tradeTax);
+                Helpers.ecoHook.getEconomy().withdrawPlayer(player, MainConfig.tradeTax);
+                Helpers.ecoHook.getEconomy().withdrawPlayer(partner, MainConfig.tradeTax);
+            }
+            else{
+                Helpers.PlayNegativeSound (player);
+                Helpers.PlayNegativeSound (partner);
+                Helpers.SendFormated(player, "&4Trade canceled not all sides are able to pay trade tax: " + MainConfig.tradeTax);
+                Helpers.SendFormated(partner, "&4Trade canceled not all sides are able to pay trade tax: " + MainConfig.tradeTax);
+                ArrayList<ItemStack> playerItems = GetInvItems(partnerTop);
+                ArrayList<ItemStack> partnerItems = GetInvItems(playerTop);
+
+                if(Helpers.isPremium && MainConfig.logs){
+                    // Player and partner items are swapped
+                    LogPack lp = new LogPack(player, partner, playerStatus,partnerStatus, partnerItems, playerItems);
+                    lp.Log(true);
+                }
+
+                partnerTop.clear();
+                playerTop.clear();
+
+                playerStatus.Clear();
+                partnerStatus.Clear();
+
+                Inventory playerInv = Bukkit.createInventory(player,54, "Trade Failed");
+                for(int i = 0; i < playerItems.size(); i++){
+                    playerInv.setItem(i,playerItems.get(i));
+                }
+                player.openInventory(playerInv);
+                Helpers.PlayPositiveSound (player);
+
+                Inventory partnerInv = Bukkit.createInventory(partner,54, "Trade Failed");
+                for(int i = 0; i < partnerItems.size(); i++){
+                    partnerInv.setItem(i,partnerItems.get(i));
+                }
+                partner.openInventory(partnerInv);
+                Helpers.PlayPositiveSound (partner);
+                return;
+            }
+        }
+
         if(Helpers.isPremium){
             ItemStack playerXPRemoveItem = playerTop.getItem(36); // Xp for trade partner
             ItemStack partnerXPRemoveItem = partnerTop.getItem(36); // Xp for player
@@ -256,7 +303,7 @@ public class TradeGUI {
         if(Helpers.isPremium && MainConfig.logs){
             // Player and partner items are swapped
             LogPack lp = new LogPack(player, partner, playerStatus,partnerStatus, partnerItems, playerItems);
-            lp.Log();
+            lp.Log(false);
         }
 
         partnerTop.clear();

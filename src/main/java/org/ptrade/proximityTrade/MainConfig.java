@@ -26,6 +26,8 @@ public class MainConfig {
     public static boolean logs = false;
     public static LogOutput logOutput = LogOutput.Console;
 
+    public static int tradeTax = 0;
+
     public static Material borderMaterial = Material.GRAY_STAINED_GLASS_PANE;
 
     public static Material nonConfirmMaterial = Material.RED_CONCRETE;
@@ -119,6 +121,8 @@ public class MainConfig {
         else{
             logOutput = LogOutput.Console;
         }
+
+        tradeTax = config.getInt("TradeTax",0);
 
         borderMaterial = FillMaterial(borderMaterial, config, "BorderMaterial");
 
