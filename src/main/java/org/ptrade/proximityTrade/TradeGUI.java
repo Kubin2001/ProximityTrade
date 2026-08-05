@@ -535,7 +535,14 @@ public class TradeGUI {
         ItemStack playerMoneyAddItemItem = playerTop.getItem(39); // Nugget add money
 
         double currentVal = playerStatus.money;
-        double balance = Helpers.ecoHook.getEconomy ().getBalance (player);
+        double balance = 0.0;
+        if(Helpers.isPremium && Helpers.hasEconomy){
+            balance = Helpers.ecoHook.getEconomy ().getBalance (player) - MainConfig.tradeTax;
+
+        }
+        else{
+            balance = Helpers.ecoHook.getEconomy ().getBalance (player);
+        }
         double newVal = currentVal + val;
         if(newVal > balance || newVal < 0){
             return  false;

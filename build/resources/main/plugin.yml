@@ -1,5 +1,5 @@
 name: ProximityTrade
-version: '1.1.2'
+version: '1.1.3'
 main: org.ptrade.proximityTrade.ProximityTrade
 api-version: '1.21'
 softdepend: [Vault]
@@ -9,6 +9,10 @@ commands:
     usage: /<command> <player>
     description: Invite other player to trade
     permission: proximityTrade.trade
+  cancelTrade:
+    usage: /<command>
+    description: Cancel you last trade offer
+    permission: proximityTrade.cancel
 
   reload:
     usage: /<command>

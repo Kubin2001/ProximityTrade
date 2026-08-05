@@ -15,7 +15,7 @@ public class TradeStatus {
 
     TradeStatus(Player p, boolean trading){
         if(p != null){
-            lastOffer = p.getUniqueId();
+            lastOffer = null;
         }
         this.trading = trading;
     }

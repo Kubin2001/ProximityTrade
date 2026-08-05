@@ -81,7 +81,7 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
         Player receiverLastOffer = receiverStatus.GetLastOffer();
         if(receiverLastOffer != sender){
             receiverStatus.lastOffer = sender.getUniqueId();
-            if(senderStatus.lastOffer != receiver.getUniqueId()){
+            if(senderStatus.lastOffer == null || !senderStatus.lastOffer.equals(receiver.getUniqueId())){
                 Helpers.SendFormated(sender, "&2Trade request send to: " + receiver.getName());
                 Helpers.SendFormated(receiver,"&2" + sender.getName() +
                         " wants to trade with you type /trade " + sender.getName() + " to accept");
@@ -91,7 +91,7 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
             }
 
         }
-        if(senderStatus.lastOffer == receiver.getUniqueId()){
+        if (senderStatus.lastOffer != null && senderStatus.lastOffer.equals(receiver.getUniqueId())) {
             if(Helpers.isPremium && Helpers.hasEconomy && MainConfig.tradeTax != 0){ // Check if they can pay tax at the end
                 double playerBalance = Helpers.ecoHook.getEconomy().getBalance(sender);
                 double receiverBalance = Helpers.ecoHook.getEconomy().getBalance(receiver);
