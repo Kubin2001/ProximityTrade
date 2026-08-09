@@ -27,6 +27,7 @@ public class MainConfig {
     public static LogOutput logOutput = LogOutput.Console;
 
     public static int tradeTax = 0;
+    public static double moneyBaseQuantity = 100.0;
 
     public static Material borderMaterial = Material.GRAY_STAINED_GLASS_PANE;
 
@@ -111,7 +112,7 @@ public class MainConfig {
         enableNegativeSound = config.getBoolean ("EnableNegativeSounds",true);
 
         if(!Helpers.isPremium){ return;}
-        // TODO load premium settings
+
         logs = config.getBoolean("LogTrades", false);
 
         String logString = config.getString("LogType", "Console");
@@ -123,6 +124,8 @@ public class MainConfig {
         }
 
         tradeTax = config.getInt("TradeTax",0);
+        moneyBaseQuantity = config.getDouble("MoneyBaseQuantity",100.0);
+
 
         borderMaterial = FillMaterial(borderMaterial, config, "BorderMaterial");
 

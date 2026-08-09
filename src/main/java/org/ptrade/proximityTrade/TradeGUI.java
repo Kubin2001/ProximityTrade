@@ -513,7 +513,7 @@ public class TradeGUI {
         return true;
     }
 
-    public static boolean ModifyMoney(Player player , Player partner, int val){
+    public static boolean ModifyMoney(Player player , Player partner, double val){
         TradeStatus playerStatus = TradeList.GetStatus (player.getUniqueId ());
         TradeStatus partnerStatus = TradeList.GetStatus (partner.getUniqueId ());
         if(playerStatus.confirmed){

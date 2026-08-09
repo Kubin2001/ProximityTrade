@@ -24,6 +24,10 @@ LogType: 'Console'
 # How much money booth players need to have to start trade (set to 0 to not use it) requires vault and economy plugin
 TradeTax: 0
 
+# How much money will be added removed by single click
+MoneyBaseQuantity: 100.0
+
+
 # GUI materials
 # Accepted formats
 # GRAY_STAINED_GLASS
