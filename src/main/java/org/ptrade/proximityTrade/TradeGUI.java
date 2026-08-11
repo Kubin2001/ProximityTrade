@@ -284,16 +284,16 @@ public class TradeGUI {
             double playerBalance = eco.getBalance(player);
             double partnerBalance = eco.getBalance(partner);
 
-            if (moneyForPartner > 0.0 && playerBalance >= moneyForPartner) {
+            if (moneyForPartner > 0.01 && playerBalance >= moneyForPartner) {
                 eco.withdrawPlayer(player, moneyForPartner);
                 eco.depositPlayer(partner, moneyForPartner);
                 Helpers.SendFormated (partner, "&2You received " + moneyForPartner + " coins");
             }
 
-            if (moneyForPlayer > 0.0 && partnerBalance >= moneyForPlayer) {
+            if (moneyForPlayer > 0.01 && partnerBalance >= moneyForPlayer) {
                 eco.withdrawPlayer(partner, moneyForPlayer);
                 eco.depositPlayer(player, moneyForPlayer);
-                Helpers.SendFormated (player, "&2You received " + moneyForPartner + " coins");
+                Helpers.SendFormated (player, "&2You received " + moneyForPlayer + " coins");
             }
         }
 
