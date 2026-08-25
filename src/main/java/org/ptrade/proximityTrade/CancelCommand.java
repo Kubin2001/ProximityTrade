@@ -20,20 +20,18 @@ public class CancelCommand implements CommandExecutor {
         if(target == null){
             Helpers.SendFormated(p, "&4You do not have any trade offer to cancel");
             Helpers.PlayNegativeSound(p);
+            return  true;
         }
-        else{
-            playerStatus.lastOffer = null;
-            Helpers.SendFormated(p, "&2Trade rejected");
-            Helpers.SendFormated(target, "&4" +p.getName() + " has rejected your trade");
-            Helpers.PlayNegativeSound(target);
-            Helpers.PlayPositiveSound(p);
+        playerStatus.lastOffer = null;
+        Helpers.SendFormated(p, "&2Trade rejected");
+        Helpers.SendFormated(target, "&4" +p.getName() + " has rejected your trade");
+        Helpers.PlayNegativeSound(target);
+        Helpers.PlayPositiveSound(p);
 
-            TradeStatus targetStatus = TradeList.GetStatus(target.getUniqueId());
-            if(targetStatus.GetLastOffer() == p){
-                targetStatus.Clear();
-            }
+        TradeStatus targetStatus = TradeList.GetStatus(target.getUniqueId());
+        if(targetStatus.GetLastOffer() == p){
+            targetStatus.Clear();
         }
-
         return true;
     }
 }

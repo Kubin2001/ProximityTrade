@@ -24,9 +24,9 @@ public class CommandReload implements CommandExecutor {
 
         double durationSec = lDurationSec / 1_000_000.0;
         if (sender instanceof Player p) {
-            Helpers.SendFormated(p, "Restarted" + " time: " + durationSec + " ms");
+            Helpers.SendFormated(p, "&2[Proximity Trade] Main Config Reloaded in: " + durationSec + " ms");
         } else {
-            plugin.getLogger().info("Restarted" + " time: " + durationSec + " ms");
+            plugin.getLogger().info("[Proximity Trade] Main Config Reloaded in: " + durationSec + " ms");
         }
         return  true;
     }

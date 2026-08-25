@@ -484,12 +484,12 @@ public class TradeGUI {
     public static boolean ModifyXp(Player player , Player partner, int val){
         TradeStatus playerStatus = TradeList.GetStatus (player.getUniqueId ());
         TradeStatus partnerStatus = TradeList.GetStatus (partner.getUniqueId ());
+        if(playerStatus == null || partnerStatus == null){
+            Bukkit.getLogger ().info ("[ModifyXp] Unexpected error player or partner has no status");
+            return false;
+        }
         if(playerStatus.confirmed){
             return  false;
-        }
-        if(playerStatus == null || partnerStatus == null){
-            Bukkit.getLogger ().info ("Unexpected error player or partner has no status");
-            return false;
         }
         InventoryView partnerView = partner.getOpenInventory();
         InventoryView playerView = player.getOpenInventory();
@@ -516,13 +516,14 @@ public class TradeGUI {
     public static boolean ModifyMoney(Player player , Player partner, double val){
         TradeStatus playerStatus = TradeList.GetStatus (player.getUniqueId ());
         TradeStatus partnerStatus = TradeList.GetStatus (partner.getUniqueId ());
+        if(playerStatus == null || partnerStatus == null){
+            Bukkit.getLogger ().info ("[ModifyMoney] Unexpected error player or partner has no status");
+            return false;
+        }
         if(playerStatus.confirmed){
             return false;
         }
-        if(playerStatus == null || partnerStatus == null){
-            Bukkit.getLogger ().info ("Unexpected error player or partner has no status");
-            return false;
-        }
+
         InventoryView partnerView = partner.getOpenInventory();
         InventoryView playerView = player.getOpenInventory();
 
@@ -535,10 +536,9 @@ public class TradeGUI {
         ItemStack playerMoneyAddItemItem = playerTop.getItem(39); // Nugget add money
 
         double currentVal = playerStatus.money;
-        double balance = 0.0;
+        double balance;
         if(Helpers.isPremium && Helpers.hasEconomy){
             balance = Helpers.ecoHook.getEconomy ().getBalance (player) - MainConfig.tradeTax;
-
         }
         else{
             balance = Helpers.ecoHook.getEconomy ().getBalance (player);

@@ -6,21 +6,21 @@ public final class ProximityTrade extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getLogger().info("Proximity Trade Starting");
+        getLogger().info("[Proximity Trade] Starting");
         Helpers.plugin = this;
         if (getServer().getPluginManager().getPlugin("Vault") != null) {
             VaultHook ecoHook = new VaultHook();
             if (ecoHook.SetupEconomy()) {
                 Helpers.ecoHook = ecoHook;
                 Helpers.hasEconomy = true;
-                getLogger().info("Vault found economy integrated");
+                getLogger().info("[Proximity Trade] Vault found economy integrated");
             } else {
                 Helpers.hasEconomy = false;
-                getLogger().warning("Vault found but no plugin provides economy");
+                getLogger().warning("[Proximity Trade] Vault found but no plugin provides economy");
             }
         } else {
             Helpers.hasEconomy = false;
-            getLogger().info("No vault eco will be disabled");
+            getLogger().info("[Proximity Trade] No vault found money trading will be disabled");
         }
 
         if(!getDataFolder().exists()){
@@ -40,6 +40,6 @@ public final class ProximityTrade extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        getLogger().info("Proximity Trade Disabling");
+        getLogger().info("[Proximity Trade] Turning Off");
     }
 }
