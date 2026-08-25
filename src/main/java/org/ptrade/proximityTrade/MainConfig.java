@@ -53,7 +53,7 @@ public class MainConfig {
             return Material.valueOf(strUpper);
         }
         catch (Exception e){
-            Bukkit.getLogger().info("Cannot load material: " + name + " from config is it missing? Or maybe format is wrong");
+            Bukkit.getLogger().info("[Proximity Trade] Cannot load material: " + name + " from config is it missing? Or maybe format is wrong");
         }
         return  null;
     }
@@ -64,7 +64,7 @@ public class MainConfig {
             return Sound.valueOf(strUpper);
         }
         catch (Exception e){
-            Bukkit.getLogger().info("Cannot load sound from config is it missing? Or maybe format is wrong");
+            Bukkit.getLogger().info("[Proximity Trade] Cannot load sound from config is it missing? Or maybe format is wrong");
         }
         return null;
     }

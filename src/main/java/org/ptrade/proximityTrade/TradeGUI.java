@@ -200,7 +200,7 @@ public class TradeGUI {
         TradeStatus playerStatus = TradeList.GetStatus (player.getUniqueId ());
         TradeStatus partnerStatus = TradeList.GetStatus (partner.getUniqueId ());
         if(playerStatus == null || partnerStatus == null){
-            Bukkit.getLogger ().info ("Unexpected error player or partner has no status");
+            Bukkit.getLogger ().info ("[Proximity Trade] Unexpected error player or partner has no status");
             return;
         }
         InventoryView partnerView = partner.getOpenInventory();
@@ -367,7 +367,7 @@ public class TradeGUI {
         TradeStatus playerStatus = TradeList.GetStatus (player.getUniqueId ());
         TradeStatus partnerStatus = TradeList.GetStatus (partner.getUniqueId ());
         if(playerStatus == null || partnerStatus == null){
-            Bukkit.getLogger ().info ("Unexpected error player or partner has no status");
+            Bukkit.getLogger ().info ("[Proximity Trade] Unexpected error player or partner has no status");
             return;
         }
         if(playerStatus.confirmed){ // If it is already confirmed no need to check anything
@@ -387,7 +387,7 @@ public class TradeGUI {
 
         ItemStack playerConfItem = playerTop.getItem(45);
         if(playerConfItem == null){
-            Bukkit.getLogger ().info ("Unexpected error in TradeGUI TryToFinalize playerConfItem is null"
+            Bukkit.getLogger ().info ("[Proximity Trade] Unexpected error in TradeGUI TryToFinalize playerConfItem is null"
                                       + "please report this to plugin creator");
             return;
         }
@@ -401,7 +401,7 @@ public class TradeGUI {
 
         ItemStack partnerConfItem = partnerTop.getItem(53);
         if(partnerConfItem == null){
-            Bukkit.getLogger ().info ("Unexpected error in TradeGUI TryToFinalize partnerConfItem is null"
+            Bukkit.getLogger ().info ("[Proximity Trade] Unexpected error in TradeGUI TryToFinalize partnerConfItem is null"
                                       + "please report this to plugin creator");
             return;
         }
@@ -464,7 +464,7 @@ public class TradeGUI {
     private static boolean UpdateItemXpMeta(ItemStack item, int playerLevel, int newVal, boolean force){
         if(force){
             if(!UpdateItem (item,null,null,String.valueOf (newVal))){
-                Bukkit.getLogger ().info ("[ERROR] UpdateItemXpMeta cannot update item");
+                Bukkit.getLogger ().info ("[Proximity Trade] [ERROR] UpdateItemXpMeta cannot update item");
                 return  false;
             }
             return  true;
@@ -474,7 +474,7 @@ public class TradeGUI {
             return false;
         }
         if(!UpdateItem (item,null,null,String.valueOf (newVal))){
-            Bukkit.getLogger ().info ("[ERROR] UpdateItemXpMeta cannot update item");
+            Bukkit.getLogger ().info ("[Proximity Trade] [ERROR] UpdateItemXpMeta cannot update item");
             return  false;
         }
         return true;
@@ -485,7 +485,7 @@ public class TradeGUI {
         TradeStatus playerStatus = TradeList.GetStatus (player.getUniqueId ());
         TradeStatus partnerStatus = TradeList.GetStatus (partner.getUniqueId ());
         if(playerStatus == null || partnerStatus == null){
-            Bukkit.getLogger ().info ("[ModifyXp] Unexpected error player or partner has no status");
+            Bukkit.getLogger ().info ("[Proximity Trade] [ModifyXp] Unexpected error player or partner has no status");
             return false;
         }
         if(playerStatus.confirmed){
@@ -517,7 +517,7 @@ public class TradeGUI {
         TradeStatus playerStatus = TradeList.GetStatus (player.getUniqueId ());
         TradeStatus partnerStatus = TradeList.GetStatus (partner.getUniqueId ());
         if(playerStatus == null || partnerStatus == null){
-            Bukkit.getLogger ().info ("[ModifyMoney] Unexpected error player or partner has no status");
+            Bukkit.getLogger ().info ("[Proximity Trade] [ModifyMoney] Unexpected error player or partner has no status");
             return false;
         }
         if(playerStatus.confirmed){
@@ -548,11 +548,11 @@ public class TradeGUI {
             return  false;
         }
         if(!UpdateItem (playerMoneyRemoveItem,null,null,String.valueOf ((int)newVal))){
-            Bukkit.getLogger ().info ("[ERROR] UpdateItemXpMeta cannot update item");
+            Bukkit.getLogger ().info ("[Proximity Trade] [ERROR] UpdateItemXpMeta cannot update item");
             return  false;
         }
         if(!UpdateItem (playerMoneyAddItemItem,null,null,String.valueOf ((int)newVal))){
-            Bukkit.getLogger ().info ("[ERROR] UpdateItemXpMeta cannot update item");
+            Bukkit.getLogger ().info ("[Proximity Trade] [ERROR] UpdateItemXpMeta cannot update item");
             return  false;
         }
         playerStatus.money = newVal;
