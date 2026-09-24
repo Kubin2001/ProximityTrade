@@ -23,6 +23,8 @@ public class MainConfig {
     public static boolean enableNegativeSound = true;
 
     // Premium Values
+    public static String moneySuffix = "$";
+
     public static boolean logs = false;
     public static LogOutput logOutput = LogOutput.Console;
 
@@ -112,6 +114,8 @@ public class MainConfig {
         enableNegativeSound = config.getBoolean ("EnableNegativeSounds",true);
 
         if(!Helpers.isPremium){ return;}
+
+        moneySuffix = config.getString("MoneySymbol", moneySuffix);
 
         logs = config.getBoolean("LogTrades", false);
 

@@ -256,6 +256,12 @@ public class TradeGUI {
             }
         }
 
+        Helpers.SendFormated(player, "&8&l----------------------------------------");
+        Helpers.SendFormated(player, "&2&l              TRADE FINISHED            ");
+        Helpers.SendFormated(player, "&2&lReceived:");
+        Helpers.SendFormated(partner,"&8&l----------------------------------------");
+        Helpers.SendFormated(partner, "&2&l              TRADE FINISHED            ");
+        Helpers.SendFormated(partner, "&2&lReceived");
         if(Helpers.isPremium){
             ItemStack playerXPRemoveItem = playerTop.getItem(36); // Xp for trade partner
             ItemStack partnerXPRemoveItem = partnerTop.getItem(36); // Xp for player
@@ -266,13 +272,13 @@ public class TradeGUI {
                     int xpPointsForPlayer = GetExpFromLevel (xpForPlayer);
                     player.giveExp (xpPointsForPlayer);
                     RemoveExperience (partner,xpPointsForPlayer);
-                    Helpers.SendFormated (player, "&2You received " + xpPointsForPlayer + " xp points");
+                    Helpers.SendFormated (player, "&2&l" + xpPointsForPlayer + " XP");
                 }
                 if(xpForPartner != 0){
                     int xpPointsForPartner = GetExpFromLevel (xpForPartner);
                     partner.giveExp (xpPointsForPartner);
                     RemoveExperience (player, xpPointsForPartner);
-                    Helpers.SendFormated (partner, "&2You received " + xpPointsForPartner + " xp points");
+                    Helpers.SendFormated (partner, "&2&l" + xpPointsForPartner + " XP");
                 }
             }
         }
@@ -287,13 +293,13 @@ public class TradeGUI {
             if (moneyForPartner > 0.01 && playerBalance >= moneyForPartner) {
                 eco.withdrawPlayer(player, moneyForPartner);
                 eco.depositPlayer(partner, moneyForPartner);
-                Helpers.SendFormated (partner, "&2You received " + moneyForPartner + " coins");
+                Helpers.SendFormated (partner, "&2&l" + moneyForPartner + " " + MainConfig.moneySuffix);
             }
 
             if (moneyForPlayer > 0.01 && partnerBalance >= moneyForPlayer) {
                 eco.withdrawPlayer(partner, moneyForPlayer);
                 eco.depositPlayer(player, moneyForPlayer);
-                Helpers.SendFormated (player, "&2You received " + moneyForPlayer + " coins");
+                Helpers.SendFormated (player, "&2&l" + moneyForPlayer + " " + MainConfig.moneySuffix);
             }
         }
 
@@ -311,6 +317,10 @@ public class TradeGUI {
 
         playerStatus.Clear();
         partnerStatus.Clear();
+        Helpers.SendFormated(player, "&2&l" + playerItems.size() + " items");
+        Helpers.SendFormated(player, "&8&l----------------------------------------");
+        Helpers.SendFormated(partner, "&2&l" + partnerItems.size() + " items");
+        Helpers.SendFormated(partner,"&8&l----------------------------------------");
 
         Inventory playerInv = Bukkit.createInventory(player,54, "Trade Outcome");
         for(int i = 0; i < playerItems.size(); i++){

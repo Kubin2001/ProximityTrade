@@ -16,3 +16,7 @@ PositiveSound: 'ENTITY_EXPERIENCE_ORB_PICKUP'
 # This sound is player for example when player is too far away from trading partner
 EnableNegativeSounds: True
 NegativeSound: 'BLOCK_NOTE_BLOCK_BASS'
+
+# Suffix for money
+# Example : You received 40 {MoneySymbol}
+MoneySymbol: '$'

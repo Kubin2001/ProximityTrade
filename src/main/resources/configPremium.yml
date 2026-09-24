@@ -17,6 +17,10 @@ PositiveSound: 'ENTITY_EXPERIENCE_ORB_PICKUP'
 EnableNegativeSounds: True
 NegativeSound: 'BLOCK_NOTE_BLOCK_BASS'
 
+# Suffix for money
+# Example : You received 40 {MoneySymbol}
+MoneySymbol: '$'
+
 # Logging output of trade deals use 'File' for output to file or 'Console'
 LogTrades: True
 LogType: 'Console'
