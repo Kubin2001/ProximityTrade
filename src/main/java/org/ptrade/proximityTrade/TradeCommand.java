@@ -45,7 +45,9 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
         Player receiver = Bukkit.getPlayer(receiverName);
 
         if(receiver == null){
-            return  false;
+            Helpers.SendFormated(sender, "&8&l" + receiverName +  "&4 not found is he online?");
+            Helpers.PlayNegativeSound (sender);
+            return true;
         }
 
         if(!MainConfig.ignoreWorlds){
@@ -82,9 +84,9 @@ public class TradeCommand implements CommandExecutor, TabCompleter {
         if(receiverLastOffer != sender){
             receiverStatus.lastOffer = sender.getUniqueId();
             if(senderStatus.lastOffer == null || !senderStatus.lastOffer.equals(receiver.getUniqueId())){
-                Helpers.SendFormated(sender, "&2Trade request send to: " + receiver.getName());
+                Helpers.SendFormated(sender, "&2Trade request send to: &8&l" + receiver.getName());
                 Helpers.SendFormated(receiver,"&2" + sender.getName() +
-                        " wants to trade with you type /trade " + sender.getName() + " to accept");
+                        " wants to trade with you. Type &8&l/trade &2" + sender.getName() + " to accept");
                 Helpers.PlayPositiveSound (sender);
                 Helpers.PlayPositiveSound (receiver);
                 return true;
